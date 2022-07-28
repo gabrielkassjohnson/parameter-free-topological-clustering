@@ -1,1 +1,1 @@
-<img  src="D31.txt22frames.gif" />
+<img  src="R15.txt93frames.gif" />
