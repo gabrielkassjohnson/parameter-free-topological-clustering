@@ -199,7 +199,7 @@ class Pogo:
         self.cluster_dict_list = cluster_dict_list
         self.candidates_ = candidates
         self.labels_ = pred
-        
+        self.idx_array = idx_array
 
 
         return self
