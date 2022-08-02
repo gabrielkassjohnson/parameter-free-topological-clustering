@@ -1,3 +1,5 @@
+A progression of the most likely clusterings found by Pogo
+
 <img  src="varied120frames.gif" />
 
 
