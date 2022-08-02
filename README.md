@@ -1,6 +1,5 @@
-This is a progression of the most likely clusterings found by Pogo.
-At first, the dataset is all unlabelled, in white. Then the small clusters begin to form and merge,
-stabilizing into the main clustering, before finally merging into one, and looping to the beginning of the animation again.
+This is an illustration of how Pogo proceeds through a dataset. You can see the clusters merging and stabilizing
+into the most persisent clusters.
 
 <img  src="varied120frames.gif" />
 
