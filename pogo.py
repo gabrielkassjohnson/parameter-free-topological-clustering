@@ -149,6 +149,7 @@ class Pogo:
         if idx < simplex_tree.num_vertices():
             counter += 1
             idx = candidates[counter]
+        self.initial_idx_ = idx
             
             
         
@@ -198,8 +199,8 @@ class Pogo:
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
 
         self.idx_ = idx
-        self.gap_vector = gap_vector       
-        self.cluster_dict_list = cluster_dict_list
+        self.gap_vector_ = gap_vector       
+        self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
         self.labels_ = pred
 
