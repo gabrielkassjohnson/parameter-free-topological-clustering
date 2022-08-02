@@ -7,3 +7,24 @@
 
 <img  src="aniso60frames.gif" />
 
+#References:
+
+'''
+@misc{https://doi.org/10.48550/arxiv.2010.09628,
+  doi = {10.48550/ARXIV.2010.09628},
+  
+  url = {https://arxiv.org/abs/2010.09628},
+  
+  author = {Blumberg, Andrew J. and Lesnick, Michael},
+  
+  keywords = {Algebraic Topology (math.AT), Computational Geometry (cs.CG), FOS: Mathematics, FOS: Mathematics, FOS: Computer and information sciences, FOS: Computer and information sciences},
+  
+  title = {Stability of 2-Parameter Persistent Homology},
+  
+  publisher = {arXiv},
+  
+  year = {2020},
+  
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
+'''
