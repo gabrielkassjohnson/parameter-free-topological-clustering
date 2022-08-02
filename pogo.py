@@ -78,9 +78,9 @@ class Pogo:
             if len(simplex[0])>1:
                 if all(value > 0 for value in list(point_dict.values())):
                     if len(np.unique(np.array(list(point_dict.values())))) == 1:
-                        print('break')
-                        print(simplex)
-                        print(simplex[1])
+                        #print('break')
+                        #print(simplex)
+                        #print(simplex[1])
                         simplex_tree.prune_above_filtration(simplex[1])
                         break
 
