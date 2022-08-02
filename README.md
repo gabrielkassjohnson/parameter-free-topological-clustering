@@ -7,6 +7,9 @@ A progression of the most likely clusterings found by Pogo
    
    
 ## Test Sets
+These are the exact test sets used in the scikitlearn tutorial on clustering. The only change is that the results of Pogo have
+been added. It performs comparably well to the other algorithms, exhbiting behavior expected of a topological algorithm, i.e.
+discerning shapes with intertwining features. Pogo is also capable of outputting outliers, which are shown as black data points.
 
 <img  src="plot-cluster-comparison.png" />
 
