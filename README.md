@@ -10,21 +10,9 @@
 #References:
 
 '''
-@misc{https://doi.org/10.48550/arxiv.2010.09628,
-  doi = {10.48550/ARXIV.2010.09628},
-  
-  url = {https://arxiv.org/abs/2010.09628},
-  
-  author = {Blumberg, Andrew J. and Lesnick, Michael},
-  
-  keywords = {Algebraic Topology (math.AT), Computational Geometry (cs.CG), FOS: Mathematics, FOS: Mathematics, FOS: Computer and information sciences, FOS: Computer and information sciences},
-  
-  title = {Stability of 2-Parameter Persistent Homology},
-  
-  publisher = {arXiv},
-  
-  year = {2020},
-  
-  copyright = {arXiv.org perpetual, non-exclusive license}
-}
+Blumberg, Andrew J., and Michael, Lesnick. "Stability of 2-Parameter Persistent Homology." (2020). 
+
+Cohen-Steiner, David, Herbert Edelsbrunner and John Harer. “Stability of Persistence Diagrams.” Discrete & Computational Geometry 37 (2007): 103-120.
 '''
+
+Cohen-Steiner, David, Herbert Edelsbrunner and John Harer. “Stability of Persistence Diagrams.” Discrete & Computational Geometry 37 (2007): 103-120.
