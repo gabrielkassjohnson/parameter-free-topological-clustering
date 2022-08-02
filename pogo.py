@@ -64,9 +64,11 @@ class Pogo:
         #check for data format, if data is a valid distance matrix, or a point cloud
         #scipy.spatial.distance.is_valid_dm(D, tol=0.0, throw=False, name='D', warning=False)
         #Main steps here
+        self.X = X
         rips_complex = gudhi.RipsComplex(points=X)
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
-        
+        self.num_vertices_ = simplex_tree.num_vertices()
+        self.simplex_tree_ = simplex_tree
         #move through list and assign clusters to conected components
         point_dict={i:-1 for i in range(simplex_tree.num_vertices())}
         counter=0
@@ -162,7 +164,7 @@ class Pogo:
                 else:
                     break
 
-            idx_list = candidates[:100]
+            idx_list = candidates.copy()[:100]
             idx_list.sort()
             idx_array = np.asarray(idx_list)
             silhouette_list = []
@@ -182,7 +184,8 @@ class Pogo:
             inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
             
             idx = idx_array[inverted_normed_silhouette_array.argmax()]
-            
+            self.idx_array_ = idx_array
+            self.silhouette_array_ = inverted_normed_silhouette_array
         else:
             pass
                 
@@ -199,7 +202,6 @@ class Pogo:
         self.cluster_dict_list = cluster_dict_list
         self.candidates_ = candidates
         self.labels_ = pred
-        self.idx_array = idx_array
 
 
         return self
@@ -216,22 +218,24 @@ class Pogo:
         """
         """
         import matplotlib.pyplot as plt
+        cmap = plt.cm.get_cmap("prism_r").copy()
+        #cmap.set_bad(cmap(0))
 
-        l = self.max_weight_per_cc_.min()
-        r = self.max_weight_per_cc_.max()
-        if self.diagram_.size > 0:
-            plt.plot(self.diagram_[:, 0], self.diagram_[:, 1], "o", color="red")
-            l = min(l, self.diagram_[:, 1].min())
-            r = max(r, self.diagram_[:, 0].max())
-        if l == r:
-            if l > 0:
-                l, r = 0.9 * l, 1.1 * r
-            elif l < 0:
-                l, r = 1.1 * l, 0.9 * r
-            else:
-                l, r = -1.0, 1.0
-        plt.plot([l, r], [l, r])
-        plt.plot(
-            self.max_weight_per_cc_, numpy.full(self.max_weight_per_cc_.shape, 1.1 * l - 0.1 * r), "o", color="green"
-        )
+        cmap.set_under('white')
+        cmap.set_over('black')
+        cmap.set_bad("black")
+        #cmap(number_of_clusters)
+        
+        size=8
+        plt.figure(figsize=(size,size))
+        plt.scatter(self.X[:, 0], self.X[:, 1],
+                    s=40, 
+                    c=self.labels_,
+                    marker="o",
+                    cmap=cmap,
+                    norm=None,
+                    alpha=.7,
+                    edgecolor="k",
+                    vmin = 0)
+
         plt.show()
