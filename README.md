@@ -7,9 +7,10 @@
 
 <img  src="aniso60frames.gif" />
 
-##References
+## References
 
+'''
 Cohen-Steiner, David, Herbert Edelsbrunner and John Harer. “Stability of Persistence Diagrams.” Discrete & Computational Geometry 37 (2007): 103-120.
 
 Blumberg, Andrew J., and Michael, Lesnick. "Stability of 2-Parameter Persistent Homology." (2020). 
-
+'''
