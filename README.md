@@ -1,5 +1,5 @@
 This is an illustration of how Pogo proceeds through a dataset. You can see the clusters merging and stabilizing
-into the most persisent clusters.
+into their most persisent arrangement.
 
 <img  src="varied120frames.gif" />
 
