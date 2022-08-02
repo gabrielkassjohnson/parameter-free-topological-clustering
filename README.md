@@ -8,7 +8,7 @@ A progression of the most likely clusterings found by Pogo
    
 ## Test Sets
 
-<img  src="plot-cluster-comparison.jpg" />
+<img  src="plot-cluster-comparison.png" />
 
 
 ## References
