@@ -242,6 +242,8 @@ class Pogo:
         plt.show()
         
     def get_silhouette_array(self, number_of_indices):
+        import matplotlib.pyplot as plt
+
         idx_list = self.candidates_.copy()[:number_of_indices]
         idx_list.sort()
         idx_array = np.asarray(idx_list)
@@ -250,4 +252,5 @@ class Pogo:
             silhouette = metrics.silhouette_score(self.X, np.array(list(self.cluster_dict_list_[i].values())), metric="euclidean")
             silhouette_list.append(silhouette)
         silhouette_array = np.asarray(silhouette_list)
-        return silhouette_array, idx_array
+        plt.plot(idx_array,silhouette_array)
+        
