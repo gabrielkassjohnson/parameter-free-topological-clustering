@@ -125,7 +125,7 @@ class Pogo:
         inverted_normed_distance = 1 - normed_distance
 
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,2)
+        #inverted_normed_distance = np.power(inverted_normed_distance,2)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
 
         #normalize to create a probability vector
@@ -240,3 +240,14 @@ class Pogo:
                     vmin = 0)
 
         plt.show()
+        
+    def get_silhouette_array(self, number_of_indices):
+        idx_list = self.candidates_.copy()[:number_of_indices]
+        idx_list.sort()
+        idx_array = np.asarray(idx_list)
+        silhouette_list = []
+        for i in idx_list:
+            silhouette = metrics.silhouette_score(self.X, np.array(list(self.cluster_dict_list_[i].values())), metric="euclidean")
+            silhouette_list.append(silhouette)
+        silhouette_array = np.asarray(silhouette_list)
+        return silhouette_array, idx_array
