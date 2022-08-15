@@ -3,9 +3,11 @@ into their most persisent arrangement.
 
 <img  src="varied140frames.gif" />
 
+# Abstract
 
    Filtrations of simplicial complexes, and representations like barcodes and persistence diagrams, encode topological information about a set of points, or a network graph. The 0’th dimensional persistent homology includes only points and edges, forming connected components, i.e. clusters. The bottleneck and wasserstein distances on persistence diagrams have been proven to be stable, which gives a theoretical support to using these tools in noisy real-world scenarios. Vectorizations like persistence landscapes and persistent entropy can be used as inputs to machine learning models, extending usefuleness even further. These representations are a powerful tool for feature detection in predictive models. Bi-filtrations multiply these capabilites by introducing a second parameter to the filtration, such as a function accounting for density, or another known property of the data. Work from Bubenik and others has shown the fundamental ability of persistence diagrams to separate noise from topological features, and a fundamental connection between persistence diagrams and statistics, with the possibility of applying hypothesis testing within the framework of persistent homology. All of this taken together implies that filtrations contain inherently agnostic, yet rich statistical information about the clustering (and topological) behavior of datasets across scales and dimensions. Here, we propose a parameter agnostic clustering algorithm, based on the statistical partitioning of filtrations into noise and features, called Proportional Gap Ordering, It transforms a filtration of simplicial complexes into a probability vector, and chooses optimal cutoffs based on the behavior of connected components, producing cluster assignments for a data set, along with a measure of likeliness for each possible clustering.
 
+## Introduction
 Pogo is a clustering algorithm that works by building a filtration of simplicial complexes from a dataset,
 either a point cloud, or a distance matrix, which can represent a network graph.
 The algorithm calculates the gaps between persistent features, normalizes the gaps,
@@ -21,14 +23,21 @@ the cutoff back in time through the filtration by analyzing the silhouette value
 occuring earlier than the first choice. In noisy or overlapping datasets, this allows discovery of finer-grained
 sub-clustering behavior, which is often what people want to know about a dataset, in addition to it's
 global properties.   
-   
-   
+
+## Background Concepts
+
+
+# Procedure
+
+
 ## Test Sets
 These are the exact test sets used in the scikitlearn tutorial on clustering. The only change is that the results of Pogo have
 been added. It performs comparably well to the other algorithms, exhbiting behavior expected of a topological algorithm, i.e.
 discerning shapes with intertwining features. Pogo is also capable of outputting outliers, which are shown as black data points.
 It's currently not optimized for speed, as it's still in an experimental phase, but several easy improvements for speed and reducing algorithmic complexity are in the works.
 <img  src="plot-cluster-comparison.png" />
+
+## Conclusion and Next Steps
 
 
 ## References
