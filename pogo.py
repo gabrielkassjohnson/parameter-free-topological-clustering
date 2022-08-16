@@ -22,7 +22,7 @@ class Pogo:
     sub-clustering behavior, which is often what people want to know about a dataset, in addition to it's
     global properties.
         
-    :Requires: Numpy, SciPy, Scikit-learn, Gudhi
+    :Requires: Numpy, Scikit-learn, Gudhi
     Attributes
     ----------
     n_clusters_: int
@@ -55,10 +55,7 @@ class Pogo:
         """
         Args:
             X ((n,d)-array of float|(n,n)-array of float|Sequence[Iterable[int]]): coordinates of the points,
-                or distance matrix (full, not just a triangle) if metric is "precomputed", or list of neighbors
-                for each point (points are represented by their index, starting from 0) if graph_type is "manual".
-                The number of points is currently limited to about 2 billion.
-            weights (ndarray of shape (n_samples)): if density_type is 'manual', a density estimate at each point
+                or distance matrix.
             y: Not used, present here for API consistency with scikit-learn by convention.
         """
         #check for data format, if data is a valid distance matrix, or a point cloud
@@ -67,8 +64,6 @@ class Pogo:
         self.X = X
         rips_complex = gudhi.RipsComplex(points=X)
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
-        self.num_vertices_ = simplex_tree.num_vertices()
-        self.simplex_tree_ = simplex_tree
         #move through list and assign clusters to conected components
         point_dict={i:-1 for i in range(simplex_tree.num_vertices())}
         counter=0
@@ -186,23 +181,17 @@ class Pogo:
             
             idx = idx_array[inverted_normed_silhouette_array.argmax()]
             self.idx_array_ = idx_array
-            self.silhouette_array_ = inverted_normed_silhouette_array
-        else:
-            pass
-                
+            self.silhouette_array_ = inverted_normed_silhouette_array     
             
-        pred = np.array(list(cluster_dict_list[idx].values()))
-        number_of_clusters = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
 
-        
-        self.n_clusters_ = number_of_clusters
+        self.simplex_tree_ = simplex_tree
+        self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
-
         self.idx_ = idx
         self.gap_vector_ = gap_vector       
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
-        self.labels_ = pred
+        self.labels_ = np.array(list(cluster_dict_list[idx].values()))
 
 
         return self
@@ -217,18 +206,18 @@ class Pogo:
 
     def plot_diagram(self):
         """
+        Creates and displays a matplotlib scatterplot of the dataset colored with predicted labels.
         """
         import matplotlib.pyplot as plt
         cmap = plt.cm.get_cmap("prism_r").copy()
         #cmap.set_bad(cmap(0))
 
         cmap.set_under('white')
-        cmap.set_over('black')
-        cmap.set_bad("black")
+        #cmap.set_over('black')
+        #cmap.set_bad("black")
         #cmap(number_of_clusters)
         
-        size=8
-        plt.figure(figsize=(size,size))
+        plt.figure(figsize=(8,8))
         plt.scatter(self.X[:, 0], self.X[:, 1],
                     s=40, 
                     c=self.labels_,
@@ -254,3 +243,88 @@ class Pogo:
         silhouette_array = np.asarray(silhouette_list)
         plt.plot(idx_array,silhouette_array)
         
+        
+        
+        
+    def animate_pogo(self,number_of_frames=10,fps=15,save=False,filename='animation'):
+        """
+        Creates and saves a matplotlib animation of the dataset colored with predicted labels.
+        """
+        import os.path
+        import matplotlib.pyplot as plt
+        from matplotlib.animation import FuncAnimation
+
+        cmap = plt.cm.get_cmap("prism_r").copy()
+        #cmap.set_bad(cmap(0))
+
+        cmap.set_under('white')
+        num_frames = number_of_frames
+        interval = 1000/fps
+        frames_array = self.candidates_.copy()
+        #print(len(frames_array))
+        #frames_array = frames_array[frames_array < pogo.idx_]
+        #print(len(frames_array))
+
+        frames_array = frames_array[:num_frames]
+        #print(len(frames_array))
+
+        frames_array.sort()
+        vmax = max(np.array(list(self.cluster_dict_list_[frames_array[-1]].values())))
+        num_frames = len(frames_array)
+        #print(frames_array)
+
+        fig, ax = plt.subplots(dpi=200)
+        ax.set_axis_off()
+
+        outfile = filename + str(num_frames) + 'frames.gif'
+        #print(outfile)
+        if not os.path.isfile(outfile):
+            def init():
+                scatter = ax.scatter(self.X[:, 0], self.X[:, 1],
+                                s=25, 
+                                c=np.array(list(self.cluster_dict_list_[0].values())),
+                                marker="o",
+                                cmap=cmap,
+                                norm=None,
+                                alpha=1,
+                                edgecolor="k",
+                                vmax=vmax,
+                                vmin = 0)
+                #ax.set(xlim=(-1, 35), ylim=(-1, 35))
+
+                return scatter,
+
+            #collection = PatchCollection(X, animated=True)
+
+            #ax.add_collection(collection)
+            #ax.autoscale_view(True)
+
+            def animate(i):
+
+                scatter = ax.scatter(X[:, 0], X[:, 1],
+                            s=25, 
+                            c=np.array(list(self.cluster_dict_list_[frames_array[i]].values())),
+                            marker="o",
+                            cmap=cmap,
+                            norm=None,
+                            alpha=1,
+                            edgecolor="k",
+                            vmax=vmax,
+                            vmin=0)
+                return scatter,
+
+
+
+            ani = FuncAnimation(fig, animate,interval=interval,init_func=init,frames=num_frames,repeat=False, blit=True)
+
+            #ani.save('animation.gif')
+
+
+
+            #writer=animation.PillowWriter()
+
+            #writer = animation.FFMpegWriter(fps=2,bitrate=1000)
+            if save == True:
+                ani.save(outfile)
+            #fig.show()
+
