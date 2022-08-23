@@ -168,7 +168,7 @@ class Pogo:
             scaler = MinMaxScaler()
             new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
             new_scaler = 1 - new_scaler
-            new_scaler = np.power(new_scaler,2)
+            #new_scaler = np.power(new_scaler,2)
             new_scaler = new_scaler.reshape(len(gap_vector))
             inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
             idx = idx_array[np.argmax(inverted_normed_silhouette_array)]
