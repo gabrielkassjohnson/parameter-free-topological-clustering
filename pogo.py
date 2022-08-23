@@ -121,7 +121,7 @@ class Pogo:
         inverted_normed_distance = 1 - normed_distance
 
         #and square it to increase the weighting
-        #inverted_normed_distance = np.power(inverted_normed_distance,2)
+        inverted_normed_distance = np.power(inverted_normed_distance,2)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
 
         #normalize to create a probability vector
@@ -150,7 +150,7 @@ class Pogo:
 
         if self.overlapping_ == True:
             idx_list = []
-            for i in range(40):
+            for i in range(20):
                 if candidates[i] > simplex_tree.num_vertices():
                     idx_list.append(candidates[i])
 
@@ -163,20 +163,18 @@ class Pogo:
                 silhouette = metrics.silhouette_score(X, np.array(list(cluster_dict_list[i].values())), metric="euclidean")
                 silhouette_list.append(silhouette)
             
-            silhouette_array = np.array(silhouette_list)
-            #new_scaler = np.arange(len(gap_vector))
-            #scaler = MinMaxScaler()
-            #new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
-            #new_scaler = 1 - new_scaler
-            #new_scaler = np.power(new_scaler,2)
-            #new_scaler = new_scaler.reshape(len(gap_vector))
-
-            #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
-            idx = idx_array[silhouette_array.argmax()]
+            silhouette_array = np.asarray(silhouette_list)
+            new_scaler = np.arange(len(gap_vector))
+            scaler = MinMaxScaler()
+            new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
+            new_scaler = 1 - new_scaler
+            new_scaler = np.power(new_scaler,2)
+            new_scaler = new_scaler.reshape(len(gap_vector))
+            inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
+            idx = idx_array[np.argmax(inverted_normed_silhouette_array)]
             self.idx_array_ = idx_array
-            self.silhouette_array_ = silhouette_array     
-
-
+            self.silhouette_array_ = silhouette_array
+            
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
