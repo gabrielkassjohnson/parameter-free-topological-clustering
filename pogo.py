@@ -66,6 +66,7 @@ class Pogo:
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
         #move through list and assign clusters to conected components
         point_dict={i:-1 for i in range(simplex_tree.num_vertices())}
+        
         counter=0
         cluster_dict_list = []
         distance_list = []
@@ -179,9 +180,9 @@ class Pogo:
 
             inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
             
-            idx = idx_array[inverted_normed_silhouette_array.argmax()]
+            idx = idx_array[silhouette_array.argmax()]
             self.idx_array_ = idx_array
-            self.silhouette_array_ = inverted_normed_silhouette_array     
+            self.silhouette_array_ = silhouette_array     
             
 
         self.simplex_tree_ = simplex_tree
@@ -204,7 +205,7 @@ class Pogo:
         return self.fit(X, y, weights).labels_
 
 
-    def plot_diagram(self):
+    def plot_diagram(self,idx=None):
         """
         Creates and displays a matplotlib scatterplot of the dataset colored with predicted labels.
         """
@@ -217,6 +218,10 @@ class Pogo:
         #cmap.set_bad("black")
         #cmap(number_of_clusters)
         
+        labels = np.array(list(self.cluster_dict_list_[self.idx_].values()))
+        if idx is not None:
+            labels = np.array(list(self.cluster_dict_list_[idx].values()))
+
         plt.figure(figsize=(8,8))
         plt.scatter(self.X[:, 0], self.X[:, 1],
                     s=40, 
@@ -230,23 +235,36 @@ class Pogo:
 
         plt.show()
         
-    def get_silhouette_array(self, number_of_indices):
+    def plot_silhouette_score(self, number_of_indices):
         import matplotlib.pyplot as plt
 
         idx_list = self.candidates_.copy()[:number_of_indices]
         idx_list.sort()
-        idx_array = np.asarray(idx_list)
+        silhouette_indices = np.asarray(idx_list)
         silhouette_list = []
         for i in idx_list:
             silhouette = metrics.silhouette_score(self.X, np.array(list(self.cluster_dict_list_[i].values())), metric="euclidean")
             silhouette_list.append(silhouette)
         silhouette_array = np.asarray(silhouette_list)
-        plt.plot(idx_array,silhouette_array)
+        plt.plot(silhouette_indices,silhouette_array)
+        return silhouette_indices, silhouette_array
         
-        
-        
-        
-    def animate_pogo(self,number_of_frames=10,fps=15,save=False,filename='animation'):
+    def plot_rand_score(self, number_of_indices, ground_truth_labels):
+        import matplotlib.pyplot as plt
+        idx_list = self.candidates_.copy()[:number_of_indices]
+        idx_list.sort()
+        rand_indices = np.asarray(idx_list)
+        rand_score_list = []
+        for i in idx_list:
+            pred = np.array(list(self.cluster_dict_list_[i].values()))
+            rand_score = metrics.adjusted_rand_score( ground_truth_labels, pred)
+            rand_score_list.append(rand_score)
+        rand_score_array = np.asarray(rand_score_list)
+        plt.plot(rand_indices,rand_score_array)
+        return rand_indices, rand_score_array
+
+
+    def animate_pogo(self,number_of_frames=10,fps=15,save=False,filename='pogo.gif'):
         """
         Creates and saves a matplotlib animation of the dataset colored with predicted labels.
         """
