@@ -146,12 +146,7 @@ class Pogo:
             counter += 1
             idx = candidates[counter]
         self.initial_idx_ = idx
-            
-            
-        
 
-        
-        
 
         if self.overlapping_ == True:
             idx_list = []
@@ -161,7 +156,7 @@ class Pogo:
                 else:
                     break
 
-            idx_list = candidates.copy()[:100]
+            idx_list = candidates.copy()[:20]
             idx_list.sort()
             idx_array = np.asarray(idx_list)
             silhouette_list = []
@@ -178,9 +173,9 @@ class Pogo:
             new_scaler = np.power(new_scaler,2)
             new_scaler = new_scaler.reshape(len(gap_vector))
 
-            inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
+            inverted_normed_silhouette_array = np.multiply(silhouette_array,1)
             
-            idx = idx_array[silhouette_array.argmax()]
+            idx = idx_array[inverted_normed_silhouette_array.argmax()]
             self.idx_array_ = idx_array
             self.silhouette_array_ = silhouette_array     
             
@@ -192,7 +187,7 @@ class Pogo:
         self.gap_vector_ = gap_vector       
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
-        self.labels_ = np.array(list(cluster_dict_list[idx].values()))
+        self.labels_ = np.array(list(cluster_dict_list[self.idx_].values()))
 
 
         return self
@@ -205,7 +200,7 @@ class Pogo:
         return self.fit(X, y, weights).labels_
 
 
-    def plot_diagram(self,idx=None):
+    def plot_diagram(self,plot_idx=None):
         """
         Creates and displays a matplotlib scatterplot of the dataset colored with predicted labels.
         """
@@ -218,14 +213,14 @@ class Pogo:
         #cmap.set_bad("black")
         #cmap(number_of_clusters)
         
-        labels = np.array(list(self.cluster_dict_list_[self.idx_].values()))
-        if idx is not None:
-            labels = np.array(list(self.cluster_dict_list_[idx].values()))
+        c = np.array(list(self.cluster_dict_list_[self.idx_].values()))
+        if plot_idx is not None:
+            c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
         plt.figure(figsize=(8,8))
         plt.scatter(self.X[:, 0], self.X[:, 1],
                     s=40, 
-                    c=self.labels_,
+                    c=c,
                     marker="o",
                     cmap=cmap,
                     norm=None,
