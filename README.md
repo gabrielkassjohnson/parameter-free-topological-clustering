@@ -1,7 +1,7 @@
 # Proportional Gap Ordering: Parameter Agnostic Topological Clustering in Metric Spaces
 
 This is an illustration of how Pogo proceeds through a dataset. You can see the clusters merging and stabilizing
-into their most persisent arrangement.
+into their most persisent arrangement. The goal of Pogo is to find the best cutoff within the sequence, and assign a confidence.
 
 <img  src="varied140frames.gif" />
 
