@@ -197,7 +197,7 @@ class Pogo:
         return self.fit(X, y, weights).labels_
 
 
-    def plot_diagram(self,plot_idx=None):
+    def plot(self,plot_idx=None):
         """
         Creates and displays a matplotlib scatterplot of the dataset colored with predicted labels.
         """
@@ -205,7 +205,7 @@ class Pogo:
         cmap = plt.cm.get_cmap("prism_r").copy()
         #cmap.set_bad(cmap(0))
 
-        cmap.set_under('white')
+        cmap.set_under('black')
         #cmap.set_over('black')
         #cmap.set_bad("black")
         #cmap(number_of_clusters)
@@ -221,7 +221,7 @@ class Pogo:
                     marker="o",
                     cmap=cmap,
                     norm=None,
-                    alpha=.7,
+                    alpha=.8,
                     edgecolor="k",
                     vmin = 0)
 
