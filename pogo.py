@@ -150,13 +150,11 @@ class Pogo:
 
         if self.overlapping_ == True:
             idx_list = []
-            for i in range(len(candidates)):
+            for i in range(40):
                 if candidates[i] > simplex_tree.num_vertices():
                     idx_list.append(candidates[i])
-                else:
-                    break
 
-            idx_list = candidates.copy()[:20]
+            #idx_list = candidates.copy()[:20]
             idx_list.sort()
             idx_array = np.asarray(idx_list)
             silhouette_list = []
@@ -165,28 +163,27 @@ class Pogo:
                 silhouette = metrics.silhouette_score(X, np.array(list(cluster_dict_list[i].values())), metric="euclidean")
                 silhouette_list.append(silhouette)
             
-            silhouette_array = np.asarray(silhouette_list)
-            new_scaler = np.arange(len(gap_vector))
-            scaler = MinMaxScaler()
-            new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
-            new_scaler = 1 - new_scaler
-            new_scaler = np.power(new_scaler,2)
-            new_scaler = new_scaler.reshape(len(gap_vector))
+            silhouette_array = np.array(silhouette_list)
+            #new_scaler = np.arange(len(gap_vector))
+            #scaler = MinMaxScaler()
+            #new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
+            #new_scaler = 1 - new_scaler
+            #new_scaler = np.power(new_scaler,2)
+            #new_scaler = new_scaler.reshape(len(gap_vector))
 
-            inverted_normed_silhouette_array = np.multiply(silhouette_array,1)
-            
-            idx = idx_array[inverted_normed_silhouette_array.argmax()]
+            #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
+            idx = idx_array[silhouette_array.argmax()]
             self.idx_array_ = idx_array
             self.silhouette_array_ = silhouette_array     
-            
+
 
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
-        self.idx_ = idx
         self.gap_vector_ = gap_vector       
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
+        self.idx_ = idx
         self.labels_ = np.array(list(cluster_dict_list[self.idx_].values()))
 
 
@@ -213,7 +210,7 @@ class Pogo:
         #cmap.set_bad("black")
         #cmap(number_of_clusters)
         
-        c = np.array(list(self.cluster_dict_list_[self.idx_].values()))
+        c = self.labels_
         if plot_idx is not None:
             c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
