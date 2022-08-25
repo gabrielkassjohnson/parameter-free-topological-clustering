@@ -165,12 +165,12 @@ class Pogo:
             scaler = MinMaxScaler()
             new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
             new_scaler = 1 - new_scaler
-            new_scaler = np.power(new_scaler,5)
+            new_scaler = np.power(new_scaler,6)
             new_scaler = new_scaler.reshape(len(gap_vector))
 
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
-            for i in range(1,10):
+            for i in range(1,30):
                 if candidates[i] < candidates[i-1]:
 
                     current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean"),new_scaler[idx])
@@ -178,8 +178,8 @@ class Pogo:
                     new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean"),new_scaler[candidates[i+1]])
                     new_score = np.multiply(new_score,gap_vector[candidates[i]])
 
-                    if  new_score > 0.8 * current_score :
-                        idx = candidates[i]
+                    if  new_score > 0.7 * current_score :
+                        idx = candidates[i+1]
                     else:
                         break
 
