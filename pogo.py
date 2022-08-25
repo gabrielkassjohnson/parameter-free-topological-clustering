@@ -149,32 +149,15 @@ class Pogo:
 
 
         if self.overlapping_ == True:
-            idx_list = []
-            for i in range(20):
-                if candidates[i] > simplex_tree.num_vertices():
-                    idx_list.append(candidates[i])
+            for i in range(10):
+                if candidates[i] < simplex_tree.num_vertices() or \
+                metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean") > \
+                0.9 * metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[self.initial_idx_].values())), metric="euclidean") and \
+                candidates[i+1] < candidates[i]:
+                    idx = candidates[i+1]
 
-            #idx_list = candidates.copy()[:20]
-            idx_list.sort()
-            idx_array = np.asarray(idx_list)
-            silhouette_list = []
-            for i in idx_list:
-
-                silhouette = metrics.silhouette_score(X, np.array(list(cluster_dict_list[i].values())), metric="euclidean")
-                silhouette_list.append(silhouette)
-            
-            silhouette_array = np.asarray(silhouette_list)
-            new_scaler = np.arange(len(gap_vector))
-            scaler = MinMaxScaler()
-            new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
-            new_scaler = 1 - new_scaler
-            #new_scaler = np.power(new_scaler,2)
-            new_scaler = new_scaler.reshape(len(gap_vector))
-            inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
-            idx = idx_array[np.argmax(inverted_normed_silhouette_array)]
-            self.idx_array_ = idx_array
-            self.silhouette_array_ = silhouette_array
-            
+            #self.idx_array_ = idx_array
+            #self.silhouette_array_ = silhouette_array    
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
