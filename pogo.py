@@ -148,6 +148,8 @@ class Pogo:
         if self.overlapping_ == True:
             #increase weighting even more
             gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+            gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+
             #renormalize
             gap_vector = gap_vector / np.sum(gap_vector)
 
@@ -168,15 +170,15 @@ class Pogo:
 
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
-            for i in range(1,20):
-                if candidates[i] < candidates[0]:
+            for i in range(1,10):
+                if candidates[i] < candidates[i-1]:
 
                     current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean"),new_scaler[idx])
                     current_score = np.multiply(current_score,gap_vector[idx])
                     new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean"),new_scaler[candidates[i+1]])
                     new_score = np.multiply(new_score,gap_vector[candidates[i]])
 
-                    if  new_score > 0.90 * current_score :
+                    if  new_score > 0.8 * current_score :
                         idx = candidates[i]
                     else:
                         break
