@@ -149,11 +149,11 @@ class Pogo:
 
 
         if self.overlapping_ == True:
-            for i in range(10):
+            for i in range(20):
                 if candidates[i] < simplex_tree.num_vertices() or \
                 metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean") > \
                 0.9 * metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[self.initial_idx_].values())), metric="euclidean") and \
-                candidates[i+1] < candidates[i]:
+                candidates[i+1] < self.initial_idx_:
                     idx = candidates[i+1]
 
             #self.idx_array_ = idx_array
