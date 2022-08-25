@@ -146,7 +146,9 @@ class Pogo:
 
 
         if self.overlapping_ == True:
-            gap_vector = np.power(gap_vector,3)
+            #increase weighting even more
+            gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+            #renormalize
             gap_vector = gap_vector / np.sum(gap_vector)
 
             '''for i in range(20):
@@ -188,7 +190,12 @@ class Pogo:
             a,b,c, = np.unique(data, True, True)
             _, ret = np.unique(b[c], False, True)
             return ret
-        
+                
+        labels = np.array(list(cluster_dict_list[idx].values()))
+        neg_idxs = np.where(labels==-1)
+        labels = replace_groups(labels)
+        labels[neg_idxs] = -1
+            
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
@@ -196,7 +203,7 @@ class Pogo:
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
         self.idx_ = idx
-        self.labels_ = replace_groups(np.array(list(cluster_dict_list[idx].values())))
+        self.labels_ = labels
 
 
         return self
