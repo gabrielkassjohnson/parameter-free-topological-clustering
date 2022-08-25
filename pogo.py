@@ -168,7 +168,7 @@ class Pogo:
 
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
-            for i in range(1,15):
+            for i in range(1,20):
                 if candidates[i] < candidates[0]:
 
                     current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean"),new_scaler[idx])
