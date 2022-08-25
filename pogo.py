@@ -140,21 +140,36 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        counter = 0
-        idx = candidates[counter]
-        if idx < simplex_tree.num_vertices():
-            counter += 1
-            idx = candidates[counter]
+        candidates = [x for x in candidates if x > simplex_tree.num_vertices()]
+        idx = candidates[0]
         self.initial_idx_ = idx
 
 
         if self.overlapping_ == True:
-            for i in range(20):
+            '''for i in range(20):
                 if candidates[i] < simplex_tree.num_vertices() or \
                 metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean") > \
                 0.9 * metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[self.initial_idx_].values())), metric="euclidean") and \
                 candidates[i+1] < self.initial_idx_:
-                    idx = candidates[i+1]
+                    idx = candidates[i+1]'''
+            
+            idx = candidates[1]
+            for i in range(2,10):
+                current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i-1]].values())), metric="euclidean"),gap_vector[candidates[i-1]])
+                new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean"),gap_vector[candidates[i]])
+                if  new_score > current_score :
+                    idx = candidates[i]
+
+
+            #new_scaler = np.arange(len(gap_vector))
+            #scaler = MinMaxScaler()
+            #new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
+            #new_scaler = 1 - new_scaler
+            #new_scaler = np.power(new_scaler,2)
+            #new_scaler = new_scaler.reshape(len(gap_vector))
+
+            #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
+
 
             #self.idx_array_ = idx_array
             #self.silhouette_array_ = silhouette_array    
@@ -165,7 +180,7 @@ class Pogo:
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
         self.idx_ = idx
-        self.labels_ = np.array(list(cluster_dict_list[self.idx_].values()))
+        self.labels_ = np.array(list(cluster_dict_list[idx].values()))
 
 
         return self
