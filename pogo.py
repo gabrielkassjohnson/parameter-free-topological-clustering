@@ -121,7 +121,7 @@ class Pogo:
         inverted_normed_distance = 1 - normed_distance
 
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,2)
+        inverted_normed_distance = np.power(inverted_normed_distance,3)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
 
         #normalize to create a probability vector
@@ -146,6 +146,9 @@ class Pogo:
 
 
         if self.overlapping_ == True:
+            gap_vector = np.power(gap_vector,3)
+            gap_vector = gap_vector / np.sum(gap_vector)
+
             '''for i in range(20):
                 if candidates[i] < simplex_tree.num_vertices() or \
                 metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean") > \
@@ -154,25 +157,38 @@ class Pogo:
                     idx = candidates[i+1]'''
             
             idx = candidates[1]
-            for i in range(2,10):
-                current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i-1]].values())), metric="euclidean"),gap_vector[candidates[i-1]])
-                new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean"),gap_vector[candidates[i]])
-                if  new_score > current_score :
-                    idx = candidates[i]
-
-
-            #new_scaler = np.arange(len(gap_vector))
-            #scaler = MinMaxScaler()
-            #new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
-            #new_scaler = 1 - new_scaler
-            #new_scaler = np.power(new_scaler,2)
-            #new_scaler = new_scaler.reshape(len(gap_vector))
+            new_scaler = np.arange(len(gap_vector))
+            scaler = MinMaxScaler()
+            new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
+            new_scaler = 1 - new_scaler
+            new_scaler = np.power(new_scaler,5)
+            new_scaler = new_scaler.reshape(len(gap_vector))
 
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
+            for i in range(1,15):
+                if candidates[i] < candidates[0]:
+
+                    current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean"),new_scaler[idx])
+                    current_score = np.multiply(current_score,gap_vector[idx])
+                    new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean"),new_scaler[candidates[i+1]])
+                    new_score = np.multiply(new_score,gap_vector[candidates[i]])
+
+                    if  new_score > 0.90 * current_score :
+                        idx = candidates[i]
+                    else:
+                        break
+
+
+
 
             #self.idx_array_ = idx_array
-            #self.silhouette_array_ = silhouette_array    
+            #self.silhouette_array_ = silhouette_array   
+        def replace_groups(data):
+            a,b,c, = np.unique(data, True, True)
+            _, ret = np.unique(b[c], False, True)
+            return ret
+        
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
@@ -180,7 +196,7 @@ class Pogo:
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
         self.idx_ = idx
-        self.labels_ = np.array(list(cluster_dict_list[idx].values()))
+        self.labels_ = replace_groups(np.array(list(cluster_dict_list[idx].values())))
 
 
         return self
