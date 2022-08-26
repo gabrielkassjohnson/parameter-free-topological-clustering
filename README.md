@@ -12,9 +12,7 @@ into their most persisent arrangement. The goal of Pogo is to find the best cuto
 ## Introduction
 Pogo is a clustering algorithm that works by building a filtration of simplicial complexes from a dataset,
 either a point cloud, or a distance matrix, which can represent a network graph.
-The algorithm calculates the gaps between persistent features, normalizes the gaps,
-and scales them by their position within the filtration, giving the algorithm it's name,
-Proportional Gap Ordering. This weights the output towards the beginning of the filtration.
+The algorithm calculates the gaps between features, scales them by their position within the filtration, giving the algorithm it's name, Proportional Gap Ordering. This weights the output towards the beginning of the filtration.
 The gaps are then transformed into a probability vector, harnessing the power of statistics
 to make the decisions about cluster merging. The algorithm then merges the dataset hierarchically,
 based on the assignment of clusters in 0th-dimension persistent homology, returning a cleaner probability vector.
