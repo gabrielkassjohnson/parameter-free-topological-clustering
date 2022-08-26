@@ -148,7 +148,7 @@ class Pogo:
         if self.overlapping_ == True:
             #increase weighting even more
             gap_vector = np.multiply(gap_vector, inverted_normed_distance)
-            gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+            #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
 
             #renormalize
             gap_vector = gap_vector / np.sum(gap_vector)
@@ -193,7 +193,7 @@ class Pogo:
                     
 
 
-                    if  new_score > 0.9 * current_score :
+                    if  new_scaled_score > 0.8 * current_scaled_score :
                         idx = candidates[i+1]
                     else:
                         break
