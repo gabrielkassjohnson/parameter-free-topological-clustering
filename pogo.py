@@ -170,20 +170,25 @@ class Pogo:
 
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
-            for i in range(1,30):
-                if candidates[i+1] < candidates[0]:
+            for i in range(1,40):
+                if candidates[i+1] < candidates[i]:
                     if idx>candidates[0]:
                         idx = candidates[i+1]
                         break
 
-                    current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean"),new_scaler[idx])
-                    current_score = np.multiply(current_score,gap_vector[idx])
-                    new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean"),new_scaler[candidates[i+1]])
-                    new_score = np.multiply(new_score,gap_vector[candidates[i]])
+                    current_silh = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+                    current_score = np.multiply(current_silh,gap_vector[idx])
+
+                    current_scaled_score = np.multiply(current_score,new_scaler[idx])
+                    
+                    new_silh = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[i+1].values())), metric="euclidean")
+                    new_score = np.multiply(current_silh,gap_vector[i+1])
+
+                    new_scaled_score = np.multiply(current_score,new_scaler[i+1])
                     
 
 
-                    if  new_score > 0.5 * current_score :
+                    if  new_scaled_score > 0.6 * current_scaled_score :
                         idx = candidates[i+1]
                     else:
                         break
