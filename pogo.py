@@ -171,7 +171,7 @@ class Pogo:
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
             for i in range(1,30):
-                if candidates[i+1] < candidates[i]:
+                if candidates[i+1] < candidates[0]:
                     if idx>candidates[0]:
                         idx = candidates[i+1]
                         break
@@ -183,7 +183,7 @@ class Pogo:
                     
 
 
-                    if  new_score > 0.6 * current_score :
+                    if  new_score > 0.5 * current_score :
                         idx = candidates[i+1]
                     else:
                         break
