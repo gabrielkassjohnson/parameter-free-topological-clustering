@@ -165,30 +165,35 @@ class Pogo:
             scaler = MinMaxScaler()
             new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
             new_scaler = 1 - new_scaler
-            new_scaler = np.power(new_scaler,6)
+            new_scaler = np.power(new_scaler,5)
             new_scaler = new_scaler.reshape(len(gap_vector))
 
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
-            for i in range(1,40):
+            for i in range(1,25):
                 if candidates[i+1] < candidates[i]:
                     if idx>candidates[0]:
                         idx = candidates[i+1]
                         break
 
-                    current_silh = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
-                    current_score = np.multiply(current_silh,gap_vector[idx])
+                    current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+                    current_normed_silhouette = (current_silhouette + 1)/2
+                    
+                    current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
 
                     current_scaled_score = np.multiply(current_score,new_scaler[idx])
                     
-                    new_silh = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[i+1].values())), metric="euclidean")
-                    new_score = np.multiply(current_silh,gap_vector[i+1])
+                    
+                    new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[i+1].values())), metric="euclidean")
+                    new_normed_silhouette = (new_silhouette + 1)/2
+
+                    new_score = np.multiply(new_normed_silhouette,gap_vector[i+1])
 
                     new_scaled_score = np.multiply(current_score,new_scaler[i+1])
                     
 
 
-                    if  new_scaled_score > 0.6 * current_scaled_score :
+                    if  new_score > 0.9 * current_score :
                         idx = candidates[i+1]
                     else:
                         break
