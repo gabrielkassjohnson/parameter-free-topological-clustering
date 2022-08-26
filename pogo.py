@@ -140,7 +140,7 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        candidates = [x for x in candidates if x > simplex_tree.num_vertices()]
+        candidates = [x for x in candidates if x > 2*simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
 
@@ -171,14 +171,17 @@ class Pogo:
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
             for i in range(1,30):
-                if candidates[i] < candidates[i-1]:
+                if candidates[i+1] < candidates[i]:
 
                     current_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean"),new_scaler[idx])
                     current_score = np.multiply(current_score,gap_vector[idx])
                     new_score = np.multiply(metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean"),new_scaler[candidates[i+1]])
                     new_score = np.multiply(new_score,gap_vector[candidates[i]])
+                    
+                    if candidates[1]>candidates[0]:
+                        break
 
-                    if  new_score > 0.7 * current_score :
+                    if  new_score > 0.6 * current_score :
                         idx = candidates[i+1]
                     else:
                         break
