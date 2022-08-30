@@ -120,9 +120,12 @@ class Pogo:
         
         inverted_normed_distance = 1 - normed_distance
 
+        #change dtype to avoid error?
+        #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,3.8)
+        inverted_normed_distance = np.power(inverted_normed_distance,4)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
+        normed_gaps = normed_gaps.astype(np.float)
 
         #normalize to create a probability vector
         gap_vector = normed_gaps / np.sum(normed_gaps)
@@ -143,64 +146,54 @@ class Pogo:
         candidates = [x for x in candidates if x > 2*simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
+        '''
         for i in range(10):
             if candidates[i+1]<candidates[i]:
                 idx = candidates[i+1]
             else:
                 break
-
+        '''
         if self.overlapping_ == True:
             #increase weighting even more
             #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
 
             #renormalize
-            gap_vector = gap_vector / np.sum(gap_vector)
+            #gap_vector = gap_vector / np.sum(gap_vector)
 
-            '''for i in range(20):
-                if candidates[i] < simplex_tree.num_vertices() or \
-                metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[candidates[i+1]].values())), metric="euclidean") > \
-                0.9 * metrics.silhouette_score(self.X, np.array(list(cluster_dict_list[self.initial_idx_].values())), metric="euclidean") and \
-                candidates[i+1] < self.initial_idx_:
-                    idx = candidates[i+1]'''
-            
-            idx = candidates[1]
+
+            #idx = candidates[1]
+            '''
             new_scaler = np.arange(len(gap_vector))
             scaler = MinMaxScaler()
             new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
             new_scaler = 1 - new_scaler
             new_scaler = np.power(new_scaler,2)
             new_scaler = new_scaler.reshape(len(gap_vector))
-
+            '''
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
             for i in range(1,30):
                 if idx>candidates[0]:
                     idx = candidates[i+1]
                     break                
-                if candidates[i+1] < candidates[i]:
+
+                current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+                current_normed_silhouette = (current_silhouette + 1)/2
+
+                current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
 
 
-                    current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
-                    current_normed_silhouette = (current_silhouette + 1)/2
-                    
-                    current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
+                new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[i+1].values())), metric="euclidean")
+                new_normed_silhouette = (new_silhouette + 1)/2
 
-                    current_scaled_score = np.multiply(current_score,new_scaler[idx])
-                    
-                    
-                    new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[i+1].values())), metric="euclidean")
-                    new_normed_silhouette = (new_silhouette + 1)/2
-
-                    new_score = np.multiply(new_normed_silhouette,gap_vector[i+1])
-
-                    new_scaled_score = np.multiply(current_score,new_scaler[i+1])
-                    
+                new_score = np.multiply(new_normed_silhouette,gap_vector[i+1])
 
 
-                    if  new_score >  current_score :
-                        idx = candidates[i+1]
-                    else:
-                        break
+
+                if  new_score >  current_score :
+                    idx = candidates[i+1]
+                else:
+                    break
 
 
 
