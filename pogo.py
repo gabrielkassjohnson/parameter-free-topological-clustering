@@ -192,7 +192,7 @@ class Pogo:
                     
 
 
-                    if  new_scaled_score >  current_scaled_score :
+                    if  new_score >  current_score :
                         idx = candidates[i+1]
                     else:
                         break

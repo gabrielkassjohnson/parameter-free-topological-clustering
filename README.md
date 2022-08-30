@@ -10,24 +10,18 @@ into their most persisent arrangement. The goal of Pogo is to find the best cuto
    Filtrations of simplicial complexes, and representations like barcodes and persistence diagrams, encode topological information about a set of points, or a network graph. The 0’th dimensional persistent homology includes only points and edges, forming connected components, i.e. clusters. The bottleneck and wasserstein distances on persistence diagrams have been proven to be stable, which gives a theoretical support to using these tools in noisy real-world scenarios. Vectorizations like persistence landscapes and persistent entropy can be used as inputs to machine learning models, extending usefuleness even further. These representations are a powerful tool for feature detection in predictive models. Bi-filtrations multiply these capabilites by introducing a second parameter to the filtration, such as a function accounting for density, or another known property of the data. Work from Bubenik and others has shown the fundamental ability of persistence diagrams to separate noise from topological features, and a fundamental connection between persistence diagrams and statistics, with the possibility of applying hypothesis testing within the framework of persistent homology. All of this taken together implies that filtrations contain inherently agnostic, yet rich statistical information about the clustering (and topological) behavior of datasets across scales and dimensions. Here, we propose a parameter agnostic clustering algorithm, based on the statistical partitioning of filtrations into noise and features, called Proportional Gap Ordering, It transforms a filtration of simplicial complexes into a probability vector, and chooses optimal cutoffs based on the behavior of connected components, producing cluster assignments for a data set, along with a measure of likeliness for each possible clustering.
 
 ## Introduction
-Pogo is a clustering algorithm that works by building a filtration of simplicial complexes from a dataset,
-either a point cloud, or a distance matrix, which can represent a network graph.
-The algorithm calculates the gaps between features, scales them by their position within the filtration, giving the algorithm it's name, Proportional Gap Ordering. This weights the output towards the beginning of the filtration.
-The gaps are then transformed into a probability vector, harnessing the power of statistics
-to make the decisions about cluster merging. The algorithm then merges the dataset hierarchically,
-based on the assignment of clusters in 0th-dimension persistent homology, returning a cleaner probability vector.
-The index of the maximum value is taken as the cutoff point within the filtration, and the simplicial complex
-located at that cutoff is considered to be the most prominent clustering.
-If the dataset has overlapping clusters, or is especially noisy, an additional step can be performed which moves
-the cutoff back in time through the filtration by analyzing the silhouette values of other candidate indices
-occuring earlier than the first choice. In noisy or overlapping datasets, this allows discovery of finer-grained
-sub-clustering behavior, which is often what people want to know about a dataset, in addition to it's
-global properties.   
+  
 
 ## Background Concepts
 
 
 ## Procedure
+Pogo begins by building a filtration of simplicial complexes from a dataset, either a point cloud, or a distance matrix, which can represent a network graph. The software package 'Gudhi' is used for this step, resulting in a simplex tree. The algorithm then calculates the gaps between consecutive features (i.e. the difference of their distances), scales them by their position within the filtration, giving the algorithm it's name, Proportional Gap Ordering. This scaling weights the location of the cutoff towards the beginning of the filtration. The 'scaled gaps' are then transformed into a probability vector, which we call a 'gap vector' harnessing the power of statistics to give additional intelligible information about cluster likelihoods. The algorithm then merges the dataset hierarchically, based on the assignment of clusters in 0'th-dimensional persistent homology, returning a cleaner probability vector. This is accomplished by assigning any values in the 'gap vector' to the earliest occurence of each clustering, or arrangement of connected components, thus ignoring the instracluster connections that don't change the connectedness of any point. This is essentially a filtration of clusterings. Then the index of the maximum value is taken as the cutoff point within the filtration, and the simplicial complex located at that cutoff is considered to be the most prominent clustering.
+If the dataset has overlapping clusters, or is especially noisy, an additional step can be performed which moves
+the cutoff back in time through the filtration by analyzing the silhouette values of other candidate indices
+occuring earlier than the first choice. Specifically, each candidate cutoff has it's value in the gap probability vector, which is akin to a likeliness measure, multiplied by the silhouette score of that cutoff's clustering, resulting in a new score, which we call the 'silhouette gap.' In noisy or overlapping datasets, this allows discovery of finer-grained
+sub-clustering behavior, which is often what people want to know about a dataset, in addition to it's
+global properties. 
 
 
 ## Test Sets
