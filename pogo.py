@@ -125,7 +125,7 @@ class Pogo:
         #and square it to increase the weighting
         inverted_normed_distance = np.power(inverted_normed_distance,5)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
-        normed_gaps = normed_gaps.astype(np.float)
+        #normed_gaps = normed_gaps.astype(np.float)
 
         #normalize to create a probability vector
         gap_vector = normed_gaps / np.sum(normed_gaps)
