@@ -142,6 +142,7 @@ class Pogo:
 
 
         #idx = candidates[1]
+        '''
         new_scaler = np.arange(len(gap_vector))
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
@@ -172,7 +173,7 @@ class Pogo:
 
                 if  new_scaled_score > current_scaled_score:
                     idx = candidates[i]
-
+'''
 
             #self.idx_array_ = idx_array
             #self.silhouette_array_ = silhouette_array   
