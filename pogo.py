@@ -6,33 +6,22 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 class Pogo:
     """
-    Clustering algorithm that begins by building a filtration of simplicial complexes from a dataset,
-    either a point cloud, or a distance matrix, which can represent a network graph.
-    The algorithm calculates the gaps between persistent features, normalizes the gaps,
-    and scales them by their position within the filtration, giving the algorithm it's name,
-    Proportional Gap Ordering. This weights the output towards the beginning of the filtration.
-    The gaps are then transformed into a probability vector, harnessing the power of statistics
-    to make the decisions about cluster merging. The algorithm then merges the dataset hierarchically,
-    based on the assignment of clusters in 0th-dimension persistent homology, returning a cleaner probability vector.
-    The index of the maximum value is taken as the cutoff point within the filtration, and the simplicial complex
-    located at that cutoff is considered to be the most prominent clustering.
-    If the dataset has overlapping clusters, or is especially noisy, an additional step can be performed which moves
-    the cutoff back in time through the filtration by analyzing the silhouette values of other candidate indices
-    occuring earlier than the first choice. In noisy or overlapping datasets, this allows discovery of finer-grained
-    sub-clustering behavior, which is often what people want to know about a dataset, in addition to it's
-    global properties.
+    Clustering algorithm with zero parameters. Input should be either a point cloud, or a distance matrix, which can represent a network graph. Returns cluster labels and other attributes.
         
     :Requires: Numpy, Scikit-learn, Gudhi
+    
     Attributes
     ----------
     n_clusters_: int
         The number of clusters.
-
-    labels_: ndarray of shape (n_samples,)
-        cluster labels for each point, taken from the candidates list
         
     candidates_: list of ints
         list of the top indices likely to be a cutoff
+
+    labels_: ndarray of shape (n_samples,)
+        cluster labels for each point, taken from the top of the candidates list
+        
+
     
     
     """
@@ -40,20 +29,14 @@ class Pogo:
         self
     ):
         """
-        Args:
-            overlapping (bool): Set to True if the dataset contains overlapping clusters,
-            or if the dataset contains a lot of noise,
-            or if the researcher wishes to see the finer sub-clusters.
-            Set to False for relatively non-overlapping datasets.
-            Default is False. 
+ 
         """
         
 
     def fit(self, X, y=None):
         """
         Args:
-            X ((n,d)-array of float|(n,n)-array of float|Sequence[Iterable[int]]): coordinates of the points,
-                or distance matrix.
+            X: coordinates of the points, or distance matrix.
             y: Not used, present here for API consistency with scikit-learn by convention.
         """
         #check for data format, if data is a valid distance matrix, or a point cloud
@@ -121,7 +104,7 @@ class Pogo:
         #change dtype to avoid error?
         #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,5)
+        inverted_normed_distance = np.power(inverted_normed_distance,4)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
         #normed_gaps = normed_gaps.astype(np.float)
 
@@ -163,10 +146,10 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,4)
+        new_scaler = np.power(new_scaler,1)
         new_scaler = new_scaler.reshape(len(gap_vector))
 
-        for i in range(1,40):
+        for i in range(1,99):
             if candidates[i] < candidates[0]:
                 current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
                 current_normed_silhouette = (current_silhouette + 1)/2
@@ -185,7 +168,7 @@ class Pogo:
 
 
 
-                if  new_scaled_score >  .9 * current_scaled_score:
+                if  new_scaled_score >  .7 * current_scaled_score:
                     idx = candidates[i]
 
 
