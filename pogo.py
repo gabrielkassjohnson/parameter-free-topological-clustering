@@ -127,13 +127,13 @@ class Pogo:
         candidates = [x for x in candidates if x > 4*simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
-        '''
+        
         for i in range(10):
             if candidates[i+1]<candidates[i]:
                 idx = candidates[i+1]
             else:
                 break
-        '''
+        
         #increase weighting even more
         #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
 
