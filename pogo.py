@@ -123,7 +123,7 @@ class Pogo:
         #change dtype to avoid error?
         #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,5)
+        inverted_normed_distance = np.power(inverted_normed_distance,4)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
         #normed_gaps = normed_gaps.astype(np.float)
 
@@ -180,19 +180,15 @@ class Pogo:
                     current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
 
 
-                    new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[i].values())), metric="euclidean")
+                    new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
                     new_normed_silhouette = (new_silhouette + 1)/2
 
-                    new_score = np.multiply(new_normed_silhouette,gap_vector[i])
+                    new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
 
 
 
-                    if  new_score >  .9 * current_score:
+                    if  new_score >  .5 * current_score:
                         idx = candidates[i]
-                    else:
-                        break
-
-
 
 
             #self.idx_array_ = idx_array
