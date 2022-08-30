@@ -37,8 +37,7 @@ class Pogo:
     
     """
     def __init__(
-        self,
-        overlapping = False
+        self
     ):
         """
         Args:
@@ -48,7 +47,6 @@ class Pogo:
             Set to False for relatively non-overlapping datasets.
             Default is False. 
         """
-        self.overlapping_ = overlapping
         
 
     def fit(self, X, y=None):
@@ -153,43 +151,42 @@ class Pogo:
             else:
                 break
         '''
-        if self.overlapping_ == True:
-            #increase weighting even more
-            #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+        #increase weighting even more
+        #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
 
-            #renormalize
-            #gap_vector = gap_vector / np.sum(gap_vector)
-
-
-            #idx = candidates[1]
-            new_scaler = np.arange(len(gap_vector))
-            scaler = MinMaxScaler()
-            new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
-            new_scaler = 1 - new_scaler
-            new_scaler = np.power(new_scaler,4)
-            new_scaler = new_scaler.reshape(len(gap_vector))
-
-            for i in range(1,40):
-                if candidates[i] < candidates[0]:
-                    current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
-                    current_normed_silhouette = (current_silhouette + 1)/2
-
-                    current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
-                    
-                    current_scaled_score = np.multiply(current_score,new_scaler[idx])
+        #renormalize
+        #gap_vector = gap_vector / np.sum(gap_vector)
 
 
-                    new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
-                    new_normed_silhouette = (new_silhouette + 1)/2
+        #idx = candidates[1]
+        new_scaler = np.arange(len(gap_vector))
+        scaler = MinMaxScaler()
+        new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
+        new_scaler = 1 - new_scaler
+        new_scaler = np.power(new_scaler,4)
+        new_scaler = new_scaler.reshape(len(gap_vector))
 
-                    new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
-                    
-                    new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+        for i in range(1,40):
+            if candidates[i] < candidates[0]:
+                current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+                current_normed_silhouette = (current_silhouette + 1)/2
+
+                current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
+
+                current_scaled_score = np.multiply(current_score,new_scaler[idx])
+
+
+                new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
+                new_normed_silhouette = (new_silhouette + 1)/2
+
+                new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
+
+                new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
 
 
 
-                    if  new_scaled_score >  .9 * current_scaled_score:
-                        idx = candidates[i]
+                if  new_scaled_score >  .9 * current_scaled_score:
+                    idx = candidates[i]
 
 
             #self.idx_array_ = idx_array
