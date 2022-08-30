@@ -124,7 +124,7 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        candidates = [x for x in candidates if x > 5*simplex_tree.num_vertices()]
+        candidates = [x for x in candidates if x > 4*simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
         '''
@@ -146,11 +146,11 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,5)
+        new_scaler = np.power(new_scaler,2)
         new_scaler = new_scaler.reshape(len(gap_vector))
 
-        for i in range(1,200):
-            if candidates[i] < idx:
+        for i in range(1,60):
+            if candidates[i] < candidates[0]:
                 current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
                 current_normed_silhouette = (current_silhouette + 1)/2
 
@@ -165,10 +165,12 @@ class Pogo:
                 new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
 
                 new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+                
+                
 
 
 
-                if  new_score > .7 * current_score:
+                if  new_scaled_score > current_scaled_score:
                     idx = candidates[i]
 
 
