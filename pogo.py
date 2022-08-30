@@ -123,7 +123,7 @@ class Pogo:
         #change dtype to avoid error?
         #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,4)
+        inverted_normed_distance = np.power(inverted_normed_distance,5)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
         #normed_gaps = normed_gaps.astype(np.float)
 
@@ -162,32 +162,33 @@ class Pogo:
 
 
             #idx = candidates[1]
-            '''
             new_scaler = np.arange(len(gap_vector))
             scaler = MinMaxScaler()
             new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
             new_scaler = 1 - new_scaler
-            new_scaler = np.power(new_scaler,2)
+            new_scaler = np.power(new_scaler,4)
             new_scaler = new_scaler.reshape(len(gap_vector))
-            '''
-            #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
-            for i in range(1,100):
+            for i in range(1,40):
                 if candidates[i] < candidates[0]:
                     current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
                     current_normed_silhouette = (current_silhouette + 1)/2
 
                     current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
+                    
+                    current_scaled_score = np.multiply(current_score,new_scaler[idx])
 
 
                     new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
                     new_normed_silhouette = (new_silhouette + 1)/2
 
                     new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
+                    
+                    new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
 
 
 
-                    if  new_score >  .5 * current_score:
+                    if  new_scaled_score >  .9 * current_scaled_score:
                         idx = candidates[i]
 
 
