@@ -121,7 +121,7 @@ class Pogo:
         inverted_normed_distance = 1 - normed_distance
 
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,3)
+        inverted_normed_distance = np.power(inverted_normed_distance,4.5)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
 
         #normalize to create a probability vector
@@ -147,7 +147,7 @@ class Pogo:
 
         if self.overlapping_ == True:
             #increase weighting even more
-            gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+            #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
 
             #renormalize
             gap_vector = gap_vector / np.sum(gap_vector)
@@ -170,10 +170,11 @@ class Pogo:
             #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
 
             for i in range(1,30):
+                if idx>candidates[0]:
+                    idx = candidates[i+1]
+                    break                
                 if candidates[i+1] < candidates[i]:
-                    if idx>candidates[0]:
-                        idx = candidates[i+1]
-                        break
+
 
                     current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
                     current_normed_silhouette = (current_silhouette + 1)/2
