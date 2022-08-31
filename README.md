@@ -35,7 +35,8 @@ we use a topological framework, additional features can be extracted from the da
 through higher-dimensional persistence diagrams [Chazal et al. 2011], such as the cir-
 cular structure [...] although it is not yet clear how this type of information can be exploited. [Chazal]
 ```
-
+Pogo produces a wealth of parameters useful in analyzing the clustering behavior of datasets. Individual data points can be seen as having an individual filtration of the clusters that they belong to, over time. If individual points can be characterized as having a statistical relationship with this or that cluster, then the entire filtration must also have those characteristics. Which is to say, if every point is polled as to which cluster it belongs with the highest statistical certainty, a clustering arrangement composed of points polled individually this way may contain a mixture of the information in the original filtration, and connectivity information from regions of local density.
+Further improving the statistical ouputs of pogo is a priority. What is the mathematical support for the specific values of confidences it produces. Often, it seems to give an overly high confidence for the final cutoff, when human intution is always looking for more and more detail, pogo seems balanced primarily with global properties. Why is this? Is this the effect of blindness to density? Suppose a similar cutoff optimization algorithm could be run on a bi-filtration, would the balance then shift towards local structure? Intuitively, finding such a cutoff within a bi-filtration should give higher test accuracies, because of it's ability to balance local and global stucture.
 
 ## References
 
