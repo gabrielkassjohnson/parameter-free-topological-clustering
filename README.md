@@ -27,6 +27,14 @@ been added, and another clustering test set has been added. [Fanti] It performs 
 <img  src="plot-cluster-comparison.png" />
 
 ## Conclusion and Next Steps
+Several Additional improvements are already underway. A process to combine different partitions of cutoffs from different locations might allow a partial workaround to the insensitivity to density. If the filtration can be 'frozen' at some point, and then have the remaining outliers 'polled' for which cluster they would be in, if the filtration continued, and then assigned, the regions of overlap between clusters could be more accurately assigned, giving results that have a slight preference for areas of density as cluster centers. In work from Frederic Chazal et al, they describe procedures that produce cluster assignments, robust to noise, with stable statistical properties:
+```
+This opens up the possibility of doing soft-clustering, where each
+point is assigned to a cluster with some probability. Finally we note that, because
+we use a topological framework, additional features can be extracted from the data
+through higher-dimensional persistence diagrams [Chazal et al. 2011], such as the cir-
+cular structure [...] although it is not yet clear how this type of information can be exploited. [Chazal]
+```
 
 
 ## References
@@ -36,7 +44,7 @@ Society, 45(1):61–75, 2008.
 
 Bubenik, Peter. “Statistical topological data analysis using persistence landscapes.” J. Mach. Learn. Res. 16 (2015): 77-102.
 
-Chazal, Frédéric, Leonidas J. Guibas, Steve Oudot and Primoz Skraba. “Persistence-Based Clustering in Riemannian Manifolds.” J. ACM 60 (2013): 41:1-41:38.
+[Chazal] Chazal, Frédéric, Leonidas J. Guibas, Steve Oudot and Primoz Skraba. “Persistence-Based Clustering in Riemannian Manifolds.” J. ACM 60 (2013): 41:1-41:38.
 
 Cohen-Steiner, David, Herbert Edelsbrunner and John Harer. “Stability of Persistence Diagrams.” Discrete & Computational Geometry 37 (2007): 103-120.
 
