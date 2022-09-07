@@ -66,6 +66,29 @@ Adler, Robert J., Omer Bobrowski and Shmuel Weinberger. “Crackle: The Persiste
 
 Myers, Audun D., Firas A. Khasawneh and Brittany Terese Fasy. “ANAPT: Additive noise analysis for persistence thresholding.” Foundations of Data Science (2022): n. pag.
 
+Myers, Audun D., Firas A. Khasawneh and Brittany Terese Fasy. “Separating Persistent Homology of Noise from Time Series Data Using Topological Signal Processing.” arXiv: Algebraic Topology (2020): n. pag.
+
 Wang, Bei. "Separating Features from Noise with Persistence and Statistics." Department of Computer Science, Duke University, Ph.D. Dissertation, 2010.
 
 [Fanti] P. Fänti and S. Sieranoja. "K-means properties on six clustering benchmark datasets." Applied Intelligence, 48 (12), 4743-4759, December 2018, https://doi.org/10.1007/s10489-018-1238-7 .
+
+Vipond, Oliver. “Multiparameter Persistence Landscapes.” J. Mach. Learn. Res. 21 (2020): 61:1-61:38.
+
+Vipond, Oliver, Joshua A. Bull, Philip S. Macklin, Ulrike Tillmann, Christopher W. Pugh, Helen M. Byrne and Heather A. Harrington. “Multiparameter persistent homology landscapes identify immune cell spatial patterns in tumors.” Proceedings of the National Academy of Sciences of the United States of America 118 (2021): n. pag.
+
+Davies, Thomas O. M., Jack Aspinall, Bryan Wilder and Long Tran-Thanh. “Fuzzy c-Means Clustering for Persistence Diagrams.” ArXiv abs/2006.02796 (2020): n. pag.
+
+Islambekov, Umar and Yulia R. Gel. “Unsupervised space–time clustering using persistent homology.” Environmetrics 30 (2018): n. pag.
+
+
+Masoomy, H., Behrouz Askari, M N Najafi and S. M. S. Movahed. “Persistent homology of fractional Gaussian noise.” Physical review. E 104 3-1 (2021): 034116 .
+
+Bubenik, Peter, Michael Hull, Dhruv Patel and Benjamin Whittle. “Persistent homology detects curvature.” Inverse Problems 36 (2020): n. pag.
+
+Mileyko, Yuriy, Sayan Mukherjee and John Harer. “Probability measures on the space of persistence diagrams.” Inverse Problems 27 (2011): 124007.
+
+Islambekov, Umar and Yulia R. Gel. “Unsupervised space–time clustering using persistent homology.” Environmetrics 30 (2018): n. pag.
+
+Kindelan, Rolando, Jos'e Fr'ias, Mauricio Cerda and Nancy Hitschfeld-Kahler. “A Topological Data Analysis Based Classifier.” ArXiv abs/2111.05214 (2021): n. pag.
+
+Güzel, Ismail and Atabey Kaygun. “A new non-archimedean metric on persistent homology.” Comput. Stat. 37 (2022): 1963-1983.
