@@ -17,11 +17,38 @@ The bottleneck and wasserstein distances on persistence diagrams have been prove
 Pogo makes use of several basic mathematical concepts and constructions from various fields. The primary tool is persistent homology, a data analysis framework from topology which characterizes data by building a filtration, or nested sequence, of simplicial complexes, i.e. points and their connections. Probability vectors are used to simplify the statistical interpretation of filtrations. The silhouette score is used as an optimization aid, because it very effectively connects probability and clustering. Pogo combines these tools to introduce a few new transformations of filtrations that can allow for optimizing cutoffs, the 'inverted scaled gap probability vector' or 'gap vector' and the 'silhouette gap score' which are described below. An iterative process of optimization, similar in effect to an elbow method, is used to adjust the final cutoff location.
 
 ## Procedure
-Pogo begins by building a filtration of simplicial complexes from a dataset, either a point cloud, or a distance matrix, which can represent a network graph. The software package 'Gudhi' is used for this step, resulting in a data structure known as a simplex tree. Pogo then calculates the differences between the distance value of each consecutive birth/death pair, and scales them by their position within the filtration, giving the algorithm it's name, Proportional Gap Ordering. This scaling weights the location of the cutoff towards the beginning of the filtration. The 'scaled gaps' are then transformed into a probability vector, which we call a 'gap vector,' harnessing the power of statistics to give intelligible information about cluster likelihoods. The algorithm then merges the dataset hierarchically, based on the assignment of clusters in 0'th-dimensional persistent homology, returning a cleaner probability vector. This is accomplished by assigning any values in the 'gap vector' to the earliest occurence of each clustering, or arrangement of connected components, thus ignoring the instracluster connections that don't change the cluster assignment of any point. The result is essentially a filtration of unique clusterings. Then the index of the maximum value is taken as the cutoff point within the filtration, and the simplicial complex located at that cutoff is considered to be the most prominent clustering.  In most cases, this cutoff will represent a defensible clustering arrangement that satisfies common sense. 
+Pogo begins by building a filtration of simplicial complexes from a dataset, either a point cloud, or a distance matrix, which can represent a network graph. The software package 'Gudhi' is used for this step, resulting in a data structure known as a simplex tree [Boissonnat 2014]. Pogo then calculates the differences between the distance value of each consecutive birth/death pair, and scales them by their position within the filtration, giving the algorithm it's name, Proportional Gap Ordering. This scaling weights the location of the cutoff towards the beginning of the filtration. The 'scaled gaps' are then transformed into a probability vector, which we call a 'gap vector,' harnessing the power of statistics to give intelligible information about cluster likelihoods. The algorithm then merges the dataset hierarchically, based on the assignment of clusters in 0'th-dimensional persistent homology, returning a cleaner probability vector. This is accomplished by assigning any values in the 'gap vector' to the earliest occurence of each clustering, or arrangement of connected components, thus ignoring the instracluster connections that don't change the cluster assignment of any point. The result is essentially a filtration of unique clusterings. Then the index of the maximum value is taken as the cutoff point within the filtration, and the simplicial complex located at that cutoff is considered to be the most prominent clustering.  In most cases, this cutoff will represent a defensible clustering arrangement that satisfies common sense. 
 
 However, an additional process of optimization is performed which can preserve the first choice cutoff, provided that none of the successive choices is better, on some metric. In the case of messy datasets, this process actually does change the location of the cutoff. If the dataset has overlapping clusters, or is especially noisy, optimizing the 'silhouette gap scores' of other candidate indices occuring earlier than the first choice has the effect of moving the cutoff back in time through the filtration. Specifically, each candidate cutoff has it's value in the 'gap vector', which is akin to a likeliness measure, multiplied by the silhouette score at that cutoff, resulting in a new score, which we call the 'silhouette gap score.' As long as the 'silhouette gap score' stays above some tuned threshold, the cutoff will continue to travel backwards until it hits a clustering with adequate structure. This allows for the discovery of fine-grained sub-clustering behavior, which is usually what people want to know about a dataset, in addition to it's more global properties. 
 
 ## Pseudocode
+
+Input: A distance Matrix M, which can represent either a point-cloud, or a network graph.
+Tranform M into a S, a Simplex Tree, of maximum dimension 1, using the software package GUDHI.
+S is a list of tuples, each of which takes the form: ((v1,v2): a pair of vertices, d: distance value in the filtration where this feature is 'born.')
+Instantiate an array A, of all zeroes (or all negative ones) with shape: (length of simplex tree, length of M).
+Instantiate a counter C = 0.
+
+for tuple i in S:
+    if every element of row i in A is not zero, and all equal to eachother:
+        break #every point has merged to one cluster
+    #if both points are still in cluster 0, assign both to a new cluster
+    if A[i,v1] and A[i,v2] are both < 1:
+        assign A[i,v1] and A[i,v2] <- C.
+        increment C.
+    #if one point is in cluster 0 and one is not, assign the one in cluster 0 to the existing cluster
+    elif A[i,v1] is > 0 and A[i,v2] is < 1:
+        assign  A[i,v2] <-  A[i,v1]
+    elif A[i,v2] is > 0 and A[i,v1] is < 1:
+        assign  A[i,v1] <-  A[i,v2]  
+    #if both points are not in cluster 0 and not in the same cluster, merge clusters to the lower number cluster
+    elif A[i,v1] and A[i,v2] are both > 0, and  A[i,v1] does not equal A[i,v2]:
+        larger_cluster_number = max(v1,v2)
+        smaller_cluster_number = min(v1,v2)
+        assign A[i, all columns with larger_cluster_number] <- smaller_cluster_number
+
+    
+    
 
 
 
@@ -47,6 +74,8 @@ Further improving the statistical ouputs of pogo is a priority. What is the math
 
 Robert Ghrist. Barcodes: The persistent topology of data. Bulletin of the American Mathematical
 Society, 45(1):61–75, 2008.
+
+[Boissonnat 2014] Boissonnat, Jean-Daniel and Clément Maria. “The Simplex Tree: An Efficient Data Structure for General Simplicial Complexes.” Algorithmica 70 (2014): 406-427.
 
 Bubenik, Peter. “Statistical topological data analysis using persistence landscapes.” J. Mach. Learn. Res. 16 (2015): 77-102.
 
