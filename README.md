@@ -23,10 +23,10 @@ However, an additional process of optimization is performed which can preserve t
 
 ## Pseudocode
 
-Input: A distance Matrix M, which can represent either a point-cloud, or a network graph.
-Tranform M into a S, a Simplex Tree, of maximum dimension 1, using the software package GUDHI.
-S is a list of tuples, each of which takes the form: ((v1,v2): a pair of vertices, d: distance value in the filtration where this feature is 'born.')
-Instantiate an array A, of all zeroes (or all negative ones) with shape: (length of simplex tree, length of M).
+Input: A distance Matrix M, which can represent either a point-cloud, or a network graph.  
+Tranform M into a S, a Simplex Tree, of maximum dimension 1, using the software package GUDHI.  
+S is a list of tuples, each of which takes the form: ((v1,v2): a pair of vertices, d: distance value in the filtration where this feature is 'born.')  
+Instantiate an array A, of all zeroes (or all negative ones) with shape: (length of simplex tree, length of M).  
 Instantiate a counter C = 0.
 Instantiate an empty list_of_distances = []
 for tuple i in S:
