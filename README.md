@@ -60,7 +60,7 @@ gap_vector = normed_gaps / np.sum(normed_gaps) #normalizes so the sum of the vec
   
 marker = 0  
 for i in range(1,length(S)-1):  
-> if A[marker] == A[i]:  
+    if A[marker] == A[i]:  
 >>gap_vector[marker] += gap_vector[i]  
 >>gap_vector[i] = 0  
 >else:  
