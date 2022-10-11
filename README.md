@@ -28,8 +28,9 @@ Tranform M into a S, a Simplex Tree, of maximum dimension 1, using the software 
 S is a list of tuples, each of which takes the form: ((v1,v2): a pair of vertices, d: distance value in the filtration where this feature is 'born.')
 Instantiate an array A, of all zeroes (or all negative ones) with shape: (length of simplex tree, length of M).
 Instantiate a counter C = 0.
-
+Instantiate an empty list_of_distances = []
 for tuple i in S:
+    list_of_distances.append(d)
     if every element of row i in A is not zero, and all equal to eachother:
         break #every point has merged to one cluster
     #if both points are still in cluster 0, assign both to a new cluster
@@ -47,8 +48,17 @@ for tuple i in S:
         smaller_cluster_number = min(v1,v2)
         assign A[i, all columns with larger_cluster_number] <- smaller_cluster_number
 
-    
-    
+gaps = list_of_distances.diff() # takes the difference of each successive distance value.
+normed_distance = gaps.MinMaxScaler # normalizes the gaps to a range with a maximum of 1, and a minumum of 0.
+inverted_normed_distance = 1 -  normed_distance # this is a discrete function with a negative slope and negative curvature in       the interval [0,1].
+raised_inverted_normed_distance = inverted_normed_distance^4 #raising this function to a power increases the early weighting.
+normed_gaps = multiply(gaps, raised_inverted_normed_distance) #crucial step, scales gaps proportionately
+gap_vector = normed_gaps / np.sum(normed_gaps) #normalizes so the sum of the vector is 1, i.e. a probability vector.
+
+
+#collapse values in the gap vector to the earliest instance of each unique clustering
+
+
 
 
 
