@@ -6,56 +6,37 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 class Pogo:
     """
-    Clustering algorithm that begins by building a filtration of simplicial complexes from a dataset,
-    either a point cloud, or a distance matrix, which can represent a network graph.
-    The algorithm calculates the gaps between persistent features, normalizes the gaps,
-    and scales them by their position within the filtration, giving the algorithm it's name,
-    Proportional Gap Ordering. This weights the output towards the beginning of the filtration.
-    The gaps are then transformed into a probability vector, harnessing the power of statistics
-    to make the decisions about cluster merging. The algorithm then merges the dataset hierarchically,
-    based on the assignment of clusters in 0th-dimension persistent homology, returning a cleaner probability vector.
-    The index of the maximum value is taken as the cutoff point within the filtration, and the simplicial complex
-    located at that cutoff is considered to be the most prominent clustering.
-    If the dataset has overlapping clusters, or is especially noisy, an additional step can be performed which moves
-    the cutoff back in time through the filtration by analyzing the silhouette values of other candidate indices
-    occuring earlier than the first choice. In noisy or overlapping datasets, this allows discovery of finer-grained
-    sub-clustering behavior, which is often what people want to know about a dataset, in addition to it's
-    global properties.
+    Clustering algorithm with zero parameters. Input should be either a point cloud, or a distance matrix, which can represent a network graph. Returns cluster labels and other attributes.
         
     :Requires: Numpy, Scikit-learn, Gudhi
+    
     Attributes
     ----------
     n_clusters_: int
         The number of clusters.
-
-    labels_: ndarray of shape (n_samples,)
-        cluster labels for each point, taken from the candidates list
         
     candidates_: list of ints
         list of the top indices likely to be a cutoff
+
+    labels_: ndarray of shape (n_samples,)
+        cluster labels for each point, taken from the top of the candidates list
+        
+
     
     
     """
     def __init__(
-        self,
-        overlapping = False
+        self
     ):
         """
-        Args:
-            overlapping (bool): Set to True if the dataset contains overlapping clusters,
-            or if the dataset contains a lot of noise,
-            or if the researcher wishes to see the finer sub-clusters.
-            Set to False for relatively non-overlapping datasets.
-            Default is False. 
+ 
         """
-        self.overlapping_ = overlapping
         
 
     def fit(self, X, y=None):
         """
         Args:
-            X ((n,d)-array of float|(n,n)-array of float|Sequence[Iterable[int]]): coordinates of the points,
-                or distance matrix.
+            X: coordinates of the points, or distance matrix.
             y: Not used, present here for API consistency with scikit-learn by convention.
         """
         #check for data format, if data is a valid distance matrix, or a point cloud
@@ -120,9 +101,12 @@ class Pogo:
         
         inverted_normed_distance = 1 - normed_distance
 
+        #change dtype to avoid error?
+        #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        #inverted_normed_distance = np.power(inverted_normed_distance,2)
+        inverted_normed_distance = np.power(inverted_normed_distance,4)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
+        #normed_gaps = normed_gaps.astype(np.float)
 
         #normalize to create a probability vector
         gap_vector = normed_gaps / np.sum(normed_gaps)
@@ -140,43 +124,65 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        counter = 0
-        idx = candidates[counter]
-        if idx < simplex_tree.num_vertices():
-            counter += 1
-            idx = candidates[counter]
+        candidates = [x for x in candidates if x > 4*simplex_tree.num_vertices()]
+        idx = candidates[0]
         self.initial_idx_ = idx
+        '''
+        for i in range(10):
+            if candidates[i+1]<candidates[i]:
+                idx = candidates[i+1]
+            else:
+                break
+        '''
+        #increase weighting even more
+        #gap_vector = np.multiply(gap_vector, inverted_normed_distance)
+
+        #renormalize
+        #gap_vector = gap_vector / np.sum(gap_vector)
 
 
-        if self.overlapping_ == True:
-            idx_list = []
-            for i in range(40):
-                if candidates[i] > simplex_tree.num_vertices():
-                    idx_list.append(candidates[i])
+        #idx = candidates[1]
+        
+        new_scaler = np.arange(len(gap_vector))
+        scaler = MinMaxScaler()
+        new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
+        new_scaler = 1 - new_scaler
+        new_scaler = np.power(new_scaler,2)
+        new_scaler = new_scaler.reshape(len(gap_vector))
+        for i in range(1,60):
+            current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+            current_normed_silhouette = (current_silhouette + 1)/2
 
-            #idx_list = candidates.copy()[:20]
-            idx_list.sort()
-            idx_array = np.asarray(idx_list)
-            silhouette_list = []
-            for i in idx_list:
+            current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
 
-                silhouette = metrics.silhouette_score(X, np.array(list(cluster_dict_list[i].values())), metric="euclidean")
-                silhouette_list.append(silhouette)
+            current_scaled_score = np.multiply(current_score,new_scaler[idx])
+
+
+            new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
+            new_normed_silhouette = (new_silhouette + 1)/2
+
+            new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
+
+            new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+
+
+            if  new_normed_silhouette >  current_normed_silhouette and candidates[i] < candidates[i-1]:
+                idx = candidates[i]
+            else:
+                break
+
+            #self.idx_array_ = idx_array
+            #self.silhouette_array_ = silhouette_array   
+        def replace_groups(data):
+            a,b,c, = np.unique(data, True, True)
+            _, ret = np.unique(b[c], False, True)
+            return ret
+                
+        labels = np.array(list(cluster_dict_list[idx].values()))
+        neg_idxs = np.where(labels==-1)
+        labels = replace_groups(labels)
+        labels[neg_idxs] = -1
             
-            silhouette_array = np.array(silhouette_list)
-            #new_scaler = np.arange(len(gap_vector))
-            #scaler = MinMaxScaler()
-            #new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
-            #new_scaler = 1 - new_scaler
-            #new_scaler = np.power(new_scaler,2)
-            #new_scaler = new_scaler.reshape(len(gap_vector))
-
-            #inverted_normed_silhouette_array = np.multiply(silhouette_array,new_scaler[idx_array])
-            idx = idx_array[silhouette_array.argmax()]
-            self.idx_array_ = idx_array
-            self.silhouette_array_ = silhouette_array     
-
-
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
@@ -184,7 +190,7 @@ class Pogo:
         self.cluster_dict_list_ = cluster_dict_list
         self.candidates_ = candidates
         self.idx_ = idx
-        self.labels_ = np.array(list(cluster_dict_list[self.idx_].values()))
+        self.labels_ = labels
 
 
         return self
@@ -197,7 +203,7 @@ class Pogo:
         return self.fit(X, y, weights).labels_
 
 
-    def plot_diagram(self,plot_idx=None):
+    def plot(self,plot_idx=None):
         """
         Creates and displays a matplotlib scatterplot of the dataset colored with predicted labels.
         """
@@ -205,7 +211,7 @@ class Pogo:
         cmap = plt.cm.get_cmap("prism_r").copy()
         #cmap.set_bad(cmap(0))
 
-        cmap.set_under('white')
+        cmap.set_under('black')
         #cmap.set_over('black')
         #cmap.set_bad("black")
         #cmap(number_of_clusters)
@@ -221,7 +227,7 @@ class Pogo:
                     marker="o",
                     cmap=cmap,
                     norm=None,
-                    alpha=.7,
+                    alpha=.8,
                     edgecolor="k",
                     vmin = 0)
 
