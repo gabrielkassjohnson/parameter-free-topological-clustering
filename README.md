@@ -30,10 +30,10 @@ Instantiate an array A, of all zeroes (or all negative ones) with shape: (length
 Instantiate a counter C = 0.  
 Instantiate an empty list_of_distances = []  
 for tuple i in S:  
-    list_of_distances.append(d)  
-    if every element of row i in A is not zero, and all equal to eachother:  
-        break #every point has merged to one cluster  
-    #if both points are still in cluster 0, assign both to a new cluster  
+   list_of_distances.append(d)  
+   if every element of row i in A is not zero, and all equal to eachother:  
+      break #every point has merged to one cluster  
+   #if both points are still in cluster 0, assign both to a new cluster  
     if A[i,v1] and A[i,v2] are both < 1:  
         assign A[i,v1] and A[i,v2] <- C.  
         increment C.  
