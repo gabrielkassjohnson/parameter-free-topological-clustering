@@ -30,41 +30,41 @@ Instantiate an array A, of all zeroes (or all negative ones) with shape: (length
 Instantiate a counter C = 0.  
 Instantiate an empty list_of_distances = []  
 for tuple i in S:  
-   list_of_distances.append(d)  
-   if every element of row i in A is not zero, and all equal to eachother:  
-      break #every point has merged to one cluster  
-   #if both points are still in cluster 0, assign both to a new cluster  
-    if A[i,v1] and A[i,v2] are both < 1:  
-        assign A[i,v1] and A[i,v2] <- C.  
-        increment C.  
-    #if one point is in cluster 0 and one is not, assign the one in cluster 0 to the existing cluster  
-    elif A[i,v1] is > 0 and A[i,v2] is < 1:  
-        assign  A[i,v2] <-  A[i,v1]  
-    elif A[i,v2] is > 0 and A[i,v1] is < 1:  
-        assign  A[i,v1] <-  A[i,v2]  
-    #if both points are not in cluster 0 and not in the same cluster, merge clusters to the lower number cluster  
-    elif A[i,v1] and A[i,v2] are both > 0, and  A[i,v1] does not equal A[i,v2]:  
-        larger_cluster_number = max(v1,v2)  
-        smaller_cluster_number = min(v1,v2)  
-        assign A[i, all columns with larger_cluster_number] <- smaller_cluster_number  
+&nbsp;&nbsp;list_of_distances.append(d)  
+&nbsp;&nbsp;if every element of row i in A is not zero, and all equal to eachother:  
+&nbsp;&nbsp;&nbsp;&nbsp;break #every point has merged to one cluster  
+&nbsp;&nbsp;//if both points are still in cluster 0, assign both to a new cluster  
+&nbsp;&nbsp;if A[i,v1] and A[i,v2] are both < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp;assign A[i,v1] and A[i,v2] <- C.  
+&nbsp;&nbsp;&nbsp;&nbsp;increment C.  
+&nbsp;&nbsp;//if one point is in cluster 0 and one is not, assign the one in cluster 0 to the existing cluster  
+&nbsp;&nbsp;elif A[i,v1] is > 0 and A[i,v2] is < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp; assign  A[i,v2] <-  A[i,v1]  
+&nbsp;&nbsp;elif A[i,v2] is > 0 and A[i,v1] is < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp;assign  A[i,v1] <-  A[i,v2]  
+&nbsp;&nbsp;//if both points are not in cluster 0 and not in the same cluster, merge clusters to the lower number cluster  
+&nbsp;&nbsp;elif A[i,v1] and A[i,v2] are both > 0, and  A[i,v1] does not equal A[i,v2]:  
+&nbsp;&nbsp;&nbsp;&nbsp;larger_cluster_number = max(v1,v2)  
+&nbsp;&nbsp;&nbsp;&nbsp;smaller_cluster_number = min(v1,v2)  
+&nbsp;&nbsp;&nbsp;&nbsp;assign A[i, all columns with larger_cluster_number] <- smaller_cluster_number  
 
-gaps = list_of_distances.diff() # takes the difference of each successive distance value.  
-normed_distance = gaps.MinMaxScaler # normalizes the gaps to a range with a maximum of 1, and a minumum of 0.  
-inverted_normed_distance = 1 -  normed_distance # this is a discrete function with a negative slope and negative curvature in the interval [0,1].  
-raised_inverted_normed_distance = inverted_normed_distance^4 #raising this function to a power increases the early weighting.  
-normed_gaps = multiply(gaps, raised_inverted_normed_distance) #crucial step, scales gaps proportionately  
-gap_vector = normed_gaps / np.sum(normed_gaps) #normalizes so the sum of the vector is 1, i.e. a probability vector.  
+gaps_ <- list_of_distances.diff() // takes the difference of each successive distance value.  
+normed_distance <- gaps.MinMaxScaler // normalizes the gaps to a range with a maximum of 1, and a minumum of 0.  
+inverted_normed_distance <- 1 -  normed_distance // this is a discrete function with a negative slope and negative curvature in the interval [0,1].  
+raised_inverted_normed_distance <- inverted_normed_distance^4 //raising this function to a power increases the early weighting. Tunable Parameter.  
+normed_gaps <- multiply(gaps, raised_inverted_normed_distance) //crucial step, scales gaps proportionately  
+gap_vector <- normed_gaps / np.sum(normed_gaps) //normalizes so the sum of the vector is 1, i.e. a probability vector.  
 
 
 #collapse values in the gap vector to the earliest instance of each unique clustering  
   
 marker = 0  
 for i in range(1,length(S)-1):  
-    if A[marker] == A[i]:  
->>gap_vector[marker] += gap_vector[i]  
->>gap_vector[i] = 0  
->else:  
->>marker = i  
+&nbsp;&nbsp;if A[marker] == A[i]:  
+&nbsp;&nbsp;&nbsp;&nbsp;gap_vector[marker] += gap_vector[i]  
+&nbsp;&nbsp;&nbsp;&nbsp;gap_vector[i] = 0  
+&nbsp;&nbsp;else:  
+&nbsp;&nbsp;&nbsp;&nbsp;marker = i  
 
 
 
