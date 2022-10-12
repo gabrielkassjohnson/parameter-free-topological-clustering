@@ -32,21 +32,21 @@ Instantiate an empty list_of_distances <- []
 
 for tuple i in S:  
 &nbsp;&nbsp;list_of_distances.append(d)  
-&nbsp;&nbsp;if every element of row i in A is not zero, and all equal to eachother:  
+&nbsp;&nbsp;if all(A[i]) != 0 all(A[i] == all(A[i]:  
 &nbsp;&nbsp;&nbsp;&nbsp;break //every point has merged to one cluster  
 &nbsp;&nbsp;//if both points are still in cluster 0, assign both to a new cluster  
-&nbsp;&nbsp;if A[i,v1] and A[i,v2] are both < 1:  
+&nbsp;&nbsp;if A[i,v1] and A[i,v2] < 1:  
 &nbsp;&nbsp;&nbsp;&nbsp;assign A[i,v1] and A[i,v2] <- C.  
 &nbsp;&nbsp;&nbsp;&nbsp;increment C.  
 &nbsp;&nbsp;//if one point is in cluster 0 and one is not, assign the one in cluster 0 to the existing cluster  
-&nbsp;&nbsp;elif A[i,v1] is > 0 and A[i,v2] is < 1:  
-&nbsp;&nbsp;&nbsp;&nbsp; assign  A[i,v2] <-  A[i,v1]  
-&nbsp;&nbsp;elif A[i,v2] is > 0 and A[i,v1] is < 1:  
-&nbsp;&nbsp;&nbsp;&nbsp;assign  A[i,v1] <-  A[i,v2]  
+&nbsp;&nbsp;elif A[i,v1] > 0 and A[i,v2] < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp; A[i,v2] <-  A[i,v1]  
+&nbsp;&nbsp;elif A[i,v2] > 0 and A[i,v1] < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp;A[i,v1] <-  A[i,v2]  
 &nbsp;&nbsp;//if both points are not in cluster 0 and not in the same cluster, merge clusters to the lower number cluster  
-&nbsp;&nbsp;elif A[i,v1] and A[i,v2] are both > 0, and  A[i,v1] does not equal A[i,v2]:  
-&nbsp;&nbsp;&nbsp;&nbsp;larger_cluster_label = max(v1,v2)  
-&nbsp;&nbsp;&nbsp;&nbsp;smaller_cluster_label = min(v1,v2)  
+&nbsp;&nbsp;elif A[i,v1] and A[i,v2] > 0, and  A[i,v1] != A[i,v2]:  
+&nbsp;&nbsp;&nbsp;&nbsp;larger_cluster_label <- max(v1,v2)  
+&nbsp;&nbsp;&nbsp;&nbsp;smaller_cluster_label <- min(v1,v2)  
 &nbsp;&nbsp;&nbsp;&nbsp;idx = A[i,:] where A[i,:] == larger_cluster_label  
 &nbsp;&nbsp;&nbsp;&nbsp;assign A[i, idx] <- smaller_cluster_number  
 
@@ -58,9 +58,8 @@ normed_gaps <- multiply(gaps, raised_inverted_normed_distance) //crucial step, s
 gap_vector <- normed_gaps / np.sum(normed_gaps) //normalizes so the sum of the vector is 1, i.e. a probability vector.  
 
 
-#collapse values in the gap vector to the earliest instance of each unique clustering  
-  
-marker = 0  
+//collapse values in the gap vector to the earliest instance of each unique clustering  
+marker <- 0  
 for i in range(1,length(S)-1):  
 &nbsp;&nbsp;if A[marker] == A[i]:  
 &nbsp;&nbsp;&nbsp;&nbsp;gap_vector[marker] += gap_vector[i]  
