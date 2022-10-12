@@ -32,7 +32,7 @@ Instantiate an empty list_of_distances <- []
 
 for tuple i in S:  
 &nbsp;&nbsp;list_of_distances.append(d)  
-&nbsp;&nbsp;while any(A[i]) < 1: //points have not merged to one cluster yet
+&nbsp;&nbsp;while any(A[i]) < 1: //points have not merged to one cluster yet  
 &nbsp;&nbsp;&nbsp;&nbsp;//if both points are still in cluster 0, assign both to a new cluster  
 &nbsp;&nbsp;&nbsp;&nbsp;if A[i,v1] and A[i,v2] < 1:  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign A[i,v1] and A[i,v2] <- C.  
@@ -50,10 +50,10 @@ for tuple i in S:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A[i, idx] <- smaller_cluster_number  
 
 gaps_ <- list_of_distances.diff() // takes the difference of each successive distance value.  
-normed_distance <- gaps.MinMaxScaler // normalizes the gaps to a range with a maximum of 1, and a minumum of 0.  
-inverted_normed_distance <- 1 -  normed_distance // this is a discrete function with a negative slope and negative curvature in the interval [0,1].  
-raised_inverted_normed_distance <- inverted_normed_distance^4 //raising this function to a power increases the early weighting. Tunable Parameter.  
-normed_gaps <- multiply(gaps, raised_inverted_normed_distance) //crucial step, scales gaps proportionately  
+normed_distance <- gaps.MinMaxScaler // normalizes gaps to a range of (0,1).  
+inverted_normed_distance <- 1 -  normed_distance // a discrete function with negative slope curvature in the interval [0,1].  
+raised_inverted_normed_distance <- inverted_normed_distance^4 //raising to a power increases the early weighting. Tunable Parameter.  
+normed_gaps <- multiply(gaps, raised_inverted_normed_distance) //crucial step, scales gaps proportionately.  
 gap_vector <- normed_gaps / np.sum(normed_gaps) //normalizes so the sum of the vector is 1, i.e. a probability vector.  
 
 
