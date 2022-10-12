@@ -67,12 +67,12 @@ for i in range(1,length(S)-1):
 &nbsp;&nbsp;&nbsp;&nbsp;marker = i  
 
 
-//assign the index of the largest value to be the cutoff
-candidates <- flip(argsort(gap_vector))
-cutoff <- candidates[0]
+//assign the index of the largest value to be the cutoff  
+candidates <- flip(argsort(gap_vector))  
+cutoff <- candidates[0]  
 
-//look for a better cutoff earlier in the filtration
-for element in candidates[1:]:
+//look for a better cutoff earlier in the filtration  
+for element in candidates[1:]:  
 &nbsp;&nbsp;while index(element) < index(cutoff) and \\  
 &nbsp;&nbsp;silhouette_score(element) > silhouette_score(cutoff):  
 &nbsp;&nbsp;&nbsp;&nbsp;cutoff <- element
