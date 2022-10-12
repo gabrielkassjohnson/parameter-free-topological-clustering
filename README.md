@@ -51,8 +51,9 @@ for tuple i in S:
 
 gaps_ <- list_of_distances.diff() // takes the difference of each successive distance value.  
 normed_distance <- gaps.MinMaxScaler // normalizes gaps to a range of (0,1).  
-inverted_normed_distance <- 1 -  normed_distance // a discrete function with negative slope curvature in the interval [0,1].  
-raised_inverted_normed_distance <- inverted_normed_distance^4 //raising to a power increases the early weighting. Tunable Parameter.  
+inverted_normed_distance <- 1 -  normed_distance // a discrete function with negative slope and curvature in [0,1].  
+raised_inverted_normed_distance <- inverted_normed_distance^4  
+//raising to a power increases early weighting. Tunable Parameter.  
 normed_gaps <- multiply(gaps, raised_inverted_normed_distance) //crucial step, scales gaps proportionately.  
 gap_vector <- normed_gaps / np.sum(normed_gaps) //normalizes so the sum of the vector is 1, i.e. a probability vector.  
 
@@ -75,6 +76,7 @@ cutoff <- candidates[0]
 for element in candidates[1:]:  
 &nbsp;&nbsp;while index(element) < index(cutoff) and \\  
 &nbsp;&nbsp;silhouette_score(element) > silhouette_score(cutoff):  
+// additional restrictions on the silhouette score are possible, ie more early weighting.
 &nbsp;&nbsp;&nbsp;&nbsp;cutoff <- element
 
 
