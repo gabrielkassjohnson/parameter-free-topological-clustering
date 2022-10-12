@@ -47,7 +47,7 @@ for tuple i in S:
 &nbsp;&nbsp;elif A[i,v1] and A[i,v2] are both > 0, and  A[i,v1] does not equal A[i,v2]:  
 &nbsp;&nbsp;&nbsp;&nbsp;larger_cluster_label = max(v1,v2)  
 &nbsp;&nbsp;&nbsp;&nbsp;smaller_cluster_label = min(v1,v2)  
-&nbsp;&nbsp;&nbsp;&nbsp;idx = A[i,:] where A[i,:] == larger_cluster_label
+&nbsp;&nbsp;&nbsp;&nbsp;idx = A[i,:] where A[i,:] == larger_cluster_label  
 &nbsp;&nbsp;&nbsp;&nbsp;assign A[i, idx] <- smaller_cluster_number  
 
 gaps_ <- list_of_distances.diff() // takes the difference of each successive distance value.  
