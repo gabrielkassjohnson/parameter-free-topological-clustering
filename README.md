@@ -76,7 +76,6 @@ cutoff <- candidates[0]
 for element in candidates[1:]:  
 &nbsp;&nbsp;while index(element) < index(cutoff) and \\  
 &nbsp;&nbsp;silhouette_score(element) > silhouette_score(cutoff):  
-// additional restrictions on the silhouette score are possible, ie more early weighting.
 &nbsp;&nbsp;&nbsp;&nbsp;cutoff <- element
 
 
