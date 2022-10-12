@@ -32,8 +32,8 @@ Instantiate an empty list_of_distances <- []
 
 for tuple i in S:  
 &nbsp;&nbsp;list_of_distances.append(d)  
-&nbsp;&nbsp;if all(A[i]) != 0 all(A[i] == all(A[i]:  
-&nbsp;&nbsp;&nbsp;&nbsp;break //every point has merged to one cluster  
+if all(A[i]) != 0 and all(A[i]) == all(A[i]):  
+&nbsp;&nbsp;while any(A[i]) < 1: //points have not merged to one cluster yet
 &nbsp;&nbsp;//if both points are still in cluster 0, assign both to a new cluster  
 &nbsp;&nbsp;if A[i,v1] and A[i,v2] < 1:  
 &nbsp;&nbsp;&nbsp;&nbsp;assign A[i,v1] and A[i,v2] <- C.  
