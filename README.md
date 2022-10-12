@@ -33,21 +33,21 @@ Instantiate an empty list_of_distances <- []
 for tuple i in S:  
 &nbsp;&nbsp;list_of_distances.append(d)  
 &nbsp;&nbsp;while any(A[i]) < 1: //points have not merged to one cluster yet
-&nbsp;&nbsp;//if both points are still in cluster 0, assign both to a new cluster  
-&nbsp;&nbsp;if A[i,v1] and A[i,v2] < 1:  
-&nbsp;&nbsp;&nbsp;&nbsp;assign A[i,v1] and A[i,v2] <- C.  
-&nbsp;&nbsp;&nbsp;&nbsp;increment C.  
-&nbsp;&nbsp;//if one point is in cluster 0 and one is not, assign the one in cluster 0 to the existing cluster  
-&nbsp;&nbsp;elif A[i,v1] > 0 and A[i,v2] < 1:  
-&nbsp;&nbsp;&nbsp;&nbsp; A[i,v2] <-  A[i,v1]  
-&nbsp;&nbsp;elif A[i,v2] > 0 and A[i,v1] < 1:  
-&nbsp;&nbsp;&nbsp;&nbsp;A[i,v1] <-  A[i,v2]  
-&nbsp;&nbsp;//if both points are not in cluster 0 and not in the same cluster, merge clusters to the lower number cluster  
-&nbsp;&nbsp;elif A[i,v1] and A[i,v2] > 0, and  A[i,v1] != A[i,v2]:  
-&nbsp;&nbsp;&nbsp;&nbsp;larger_cluster_label <- max(v1,v2)  
-&nbsp;&nbsp;&nbsp;&nbsp;smaller_cluster_label <- min(v1,v2)  
-&nbsp;&nbsp;&nbsp;&nbsp;idx = A[i,:] where A[i,:] == larger_cluster_label  
-&nbsp;&nbsp;&nbsp;&nbsp;assign A[i, idx] <- smaller_cluster_number  
+&nbsp;&nbsp;&nbsp;&nbsp;//if both points are still in cluster 0, assign both to a new cluster  
+&nbsp;&nbsp;&nbsp;&nbsp;if A[i,v1] and A[i,v2] < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assign A[i,v1] and A[i,v2] <- C.  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increment C.  
+&nbsp;&nbsp;&nbsp;&nbsp;//if one point is in cluster 0 and one is not, assign the one in cluster 0 to the existing cluster  
+&nbsp;&nbsp;&nbsp;&nbsp;elif A[i,v1] > 0 and A[i,v2] < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A[i,v2] <-  A[i,v1]  
+&nbsp;&nbsp;&nbsp;&nbsp;elif A[i,v2] > 0 and A[i,v1] < 1:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A[i,v1] <-  A[i,v2]  
+&nbsp;&nbsp;&nbsp;&nbsp;//if both points are not in cluster 0 and not in the same cluster, merge clusters to the lower number cluster  
+&nbsp;&nbsp;&nbsp;&nbsp;elif A[i,v1] and A[i,v2] > 0, and  A[i,v1] != A[i,v2]:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;larger_cluster_label <- max(v1,v2)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;smaller_cluster_label <- min(v1,v2)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idx = A[i,:] where A[i,:] == larger_cluster_label  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A[i, idx] <- smaller_cluster_number  
 
 gaps_ <- list_of_distances.diff() // takes the difference of each successive distance value.  
 normed_distance <- gaps.MinMaxScaler // normalizes the gaps to a range with a maximum of 1, and a minumum of 0.  
