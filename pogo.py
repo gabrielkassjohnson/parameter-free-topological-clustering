@@ -152,14 +152,14 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,6)
+        new_scaler = np.power(new_scaler,5)
         new_scaler = new_scaler.reshape(len(gap_vector))
         
         score_list = []
         silh_list = []
         silh_idx = []
         for i in range(1,40):
-            if candidates[i] < candidates[0]:
+            if candidates[i] < idx:
 
                 current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
                 current_normed_silhouette = (current_silhouette + 1)/2
@@ -191,7 +191,7 @@ class Pogo:
 
             #if candidates[i] < idx:
 
-                if  new_scaled_silhouette >  current_scaled_silhouette :
+                if  new_scaled_silhouette_score >  current_scaled_silhouette_score :
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
