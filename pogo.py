@@ -141,13 +141,13 @@ class Pogo:
         #gap_vector = gap_vector / np.sum(gap_vector)
 
 
-        #idx = candidates[1]
+        idx = candidates[1]
         
         new_scaler = np.arange(len(gap_vector))
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,2)
+        new_scaler = np.power(new_scaler,4)
         new_scaler = new_scaler.reshape(len(gap_vector))
         for i in range(1,20):
             if candidates[i] < idx:
@@ -171,7 +171,7 @@ class Pogo:
                 new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[idx])
 
 
-                if  new_scaled_silhouette >  current_scaled_silhouette:
+                if  new_scaled_silhouette >  .9 * current_scaled_silhouette:
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
@@ -231,8 +231,8 @@ class Pogo:
                     cmap=cmap,
                     norm=None,
                     alpha=.8,
-                    edgecolor="k",)
-                    #vmin = 0)
+                    edgecolor="k",
+                    vmin = 0)
 
         plt.show()
         
