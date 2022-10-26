@@ -156,6 +156,8 @@ class Pogo:
             current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
 
             current_scaled_score = np.multiply(current_score,new_scaler[idx])
+            
+            current_scaled_silhouette = np.multiply(current_normed_silhouette,new_scaler[idx])
 
 
             new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
@@ -164,6 +166,8 @@ class Pogo:
             new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
 
             new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+            
+            new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[idx])
 
 
             if  new_normed_silhouette >  current_normed_silhouette and candidates[i] < candidates[i-1]:
