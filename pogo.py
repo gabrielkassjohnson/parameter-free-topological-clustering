@@ -149,31 +149,30 @@ class Pogo:
         new_scaler = 1 - new_scaler
         new_scaler = np.power(new_scaler,2)
         new_scaler = new_scaler.reshape(len(gap_vector))
-        for i in range(1,60):
-            current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
-            current_normed_silhouette = (current_silhouette + 1)/2
+        for i in range(1,20):
+            if candidates[i] < idx:
+                current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+                current_normed_silhouette = (current_silhouette + 1)/2
 
-            current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
+                current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
 
-            current_scaled_score = np.multiply(current_score,new_scaler[idx])
-            
-            current_scaled_silhouette = np.multiply(current_normed_silhouette,new_scaler[idx])
+                current_scaled_score = np.multiply(current_score,new_scaler[idx])
 
-
-            new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
-            new_normed_silhouette = (new_silhouette + 1)/2
-
-            new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
-
-            new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
-            
-            new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[idx])
+                current_scaled_silhouette = np.multiply(current_normed_silhouette,new_scaler[idx])
 
 
-            if  new_normed_silhouette >  current_normed_silhouette and candidates[i] < candidates[i-1]:
-                idx = candidates[i]
-            else:
-                break
+                new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
+                new_normed_silhouette = (new_silhouette + 1)/2
+
+                new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
+
+                new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+
+                new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[idx])
+
+
+                if  new_scaled_silhouette >  current_scaled_silhouette:
+                    idx = candidates[i]
 
             #self.idx_array_ = idx_array
             #self.silhouette_array_ = silhouette_array   
