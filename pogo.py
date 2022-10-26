@@ -124,7 +124,7 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        candidates = [x for x in candidates if x > simplex_tree.num_vertices()]
+        candidates = [x for x in candidates if x > 2* simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
         '''
@@ -147,7 +147,7 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,5)
+        new_scaler = np.power(new_scaler,6)
         new_scaler = new_scaler.reshape(len(gap_vector))
         for i in range(2,20):
             if candidates[i] < idx:
