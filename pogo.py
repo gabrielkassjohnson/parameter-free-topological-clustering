@@ -171,7 +171,7 @@ class Pogo:
                 new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[idx])
 
 
-                if  new_scaled_silhouette >  .9 * current_scaled_silhouette:
+                if  new_scaled_silhouette >  current_scaled_silhouette:
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
