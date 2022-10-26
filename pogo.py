@@ -154,6 +154,10 @@ class Pogo:
         new_scaler = 1 - new_scaler
         new_scaler = np.power(new_scaler,7)
         new_scaler = new_scaler.reshape(len(gap_vector))
+        
+        score_list = []
+        silh_list = []
+        silh_idx = []
         for i in range(1,20):
             if candidates[i] < candidates[0]:
                 current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
@@ -178,7 +182,11 @@ class Pogo:
                 new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[candidates[i]])
                 
                 new_scaled_silhouette_score = np.multiply(new_scaled_silhouette,gap_vector[candidates[i]])
-
+                
+                
+                score_list.append(new_scaled_silhouette_score)
+                silh_list.append(new_scaled_silhouette)
+                silh_idx.append(candidates[i])
 
                 if  new_scaled_silhouette >  current_scaled_silhouette :
                     idx = candidates[i]
@@ -195,6 +203,10 @@ class Pogo:
         labels = replace_groups(labels)
         labels[neg_idxs] = -1
             
+        self.score_list_ = score_list
+        self.silh_list_ = silh_list
+        self.silh_idx_ = silh_idx
+        
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
