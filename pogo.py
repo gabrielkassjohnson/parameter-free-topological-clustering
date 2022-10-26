@@ -104,7 +104,7 @@ class Pogo:
         #change dtype to avoid error?
         #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,4)
+        inverted_normed_distance = np.power(inverted_normed_distance,6)
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
         #normed_gaps = normed_gaps.astype(np.float)
 
@@ -142,17 +142,12 @@ class Pogo:
 
 
         #idx = candidates[1]
-        
-        for i in range(10):
-            if candidates[i] < idx:
-                idx = candidates[i]
-                break
-        
+
         new_scaler = np.arange(len(gap_vector))
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,5)
+        new_scaler = np.power(new_scaler,2)
         new_scaler = new_scaler.reshape(len(gap_vector))
         
         score_list = []
@@ -191,7 +186,7 @@ class Pogo:
 
             #if candidates[i] < idx:
 
-                if  new_scaled_silhouette_score >  current_scaled_silhouette_score :
+                if  new_scaled_silhouette >  current_scaled_silhouette :
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
