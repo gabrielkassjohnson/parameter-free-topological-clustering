@@ -232,8 +232,8 @@ class Pogo:
                     cmap=cmap,
                     norm=None,
                     alpha=.8,
-                    edgecolor="k",
-                    vmin = 0)
+                    edgecolor="k",)
+                    #vmin = 0)
 
         plt.show()
         
