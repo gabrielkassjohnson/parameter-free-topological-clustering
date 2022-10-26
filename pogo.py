@@ -180,7 +180,7 @@ class Pogo:
                 new_scaled_silhouette_score = np.multiply(new_scaled_silhouette,gap_vector[candidates[i]])
 
 
-                if  new_scaled_silhouette_score >  current_scaled_silhouette_score:
+                if  new_scaled_silhouette >  current_scaled_silhouette :
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
