@@ -189,7 +189,7 @@ class Pogo:
                 silh_list.append(new_scaled_silhouette)
                 silh_idx.append(candidates[i])
 
-            if candidates[i] < idx:
+            #if candidates[i] < idx:
 
                 if  new_scaled_silhouette >  current_scaled_silhouette :
                     idx = candidates[i]
