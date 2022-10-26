@@ -158,7 +158,7 @@ class Pogo:
         score_list = []
         silh_list = []
         silh_idx = []
-        for i in range(1,30):
+        for i in range(1,40):
             if candidates[i] < candidates[0]:
 
                 current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
