@@ -175,12 +175,12 @@ class Pogo:
 
                 new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
 
-                new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[i])
+                new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[candidates[i]])
                 
                 new_scaled_silhouette_score = np.multiply(new_scaled_silhouette,gap_vector[candidates[i]])
 
 
-                if  new_scaled_silhouette >  current_scaled_silhouette:
+                if  new_scaled_silhouette_score >  current_scaled_silhouette_score:
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
