@@ -208,7 +208,7 @@ class Pogo:
         Creates and displays a matplotlib scatterplot of the dataset colored with predicted labels.
         """
         import matplotlib.pyplot as plt
-        cmap = plt.cm.get_cmap("viridis").copy()
+        cmap = plt.cm.get_cmap("prism_r").copy()
         #cmap.set_bad(cmap(0))
 
         cmap.set_under('black')
