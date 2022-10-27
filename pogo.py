@@ -248,7 +248,7 @@ class Pogo:
             c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
         plt.figure(figsize=(8,8))
-        plt.scatter(self.X[:, 0], self.X[:, 1],
+        scatter = plt.scatter(self.X[:, 0], self.X[:, 1],
                     s=40, 
                     c=c,
                     marker="o",
@@ -259,6 +259,7 @@ class Pogo:
                     vmin = 0)
 
         plt.show()
+        return scatter
         
     def plot_silhouette(self):
         import matplotlib.pyplot as plt
