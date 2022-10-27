@@ -85,7 +85,7 @@ for element in candidates[1:]:
 ## Test Sets
 These are the exact test sets used in the scikitlearn tutorial on clustering. The only change is that the results of Pogo have
 been added, and another clustering test set has been added. [Fanti] It performs comparably well to the other algorithms, exhbiting behavior expected of a topological algorithm, i.e. discerning shapes with intertwining features. Pogo is also capable of outputting outliers, which are shown as black data points. It's currently not optimized for speed, as it's still in an experimental phase, but several easy improvements for speed and reducing algorithmic complexity are in the works.
-<img  src="plot-cluster-comparison.png" />
+<img  src="scikit-learn-testsets.png" />
 
 ## Conclusion and Next Steps
 Several Additional improvements are already underway. A process to combine different partitions of cutoffs from different locations might allow a partial workaround to the insensitivity to density. If the filtration can be 'frozen' at some point, and then have the remaining outliers 'polled' for which cluster they would be in, if the filtration continued, and then assigned, the regions of overlap between clusters could be more accurately assigned, giving results that have a slight preference for areas of moderate density (on the edges of clusters) to remain in the largest clusters. In work from Frederic Chazal et al, they describe procedures that produce cluster assignments, robust to noise, with stable statistical properties that extend to individual points:
