@@ -147,7 +147,7 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,2)
+        new_scaler = np.power(new_scaler,3)
         new_scaler = new_scaler.reshape(len(gap_vector))
         
         score_list = []
@@ -186,7 +186,7 @@ class Pogo:
 
             #if candidates[i] < idx:
 
-                if  new_scaled_silhouette >  current_scaled_silhouette :
+                if  new_scaled_silhouette_score >  current_scaled_silhouette_score :
                     idx = candidates[i]
 
             #self.idx_array_ = idx_array
