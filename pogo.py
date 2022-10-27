@@ -104,7 +104,7 @@ class Pogo:
         #change dtype to avoid error?
         #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,4)
+        inverted_normed_distance = np.power(inverted_normed_distance,2)
         self.inverted_normed_distance_ = inverted_normed_distance
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
         #normed_gaps = normed_gaps.astype(np.float)
@@ -125,7 +125,7 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        candidates = [x for x in candidates if x >  simplex_tree.num_vertices()]
+        candidates = [x for x in candidates if x >  4 * simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
         '''
@@ -148,13 +148,13 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,1)
+        new_scaler = np.power(new_scaler,4)
         new_scaler = new_scaler.reshape(len(gap_vector))
         
         score_list = []
         silh_list = []
         silh_idx = []
-        for i in range(1,40):
+        for i in range(1,50):
             if candidates[i] < candidates[0]:
 
                 current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
@@ -181,11 +181,11 @@ class Pogo:
                 new_scaled_silhouette_score = np.multiply(new_scaled_silhouette,gap_vector[candidates[i]])
 
 
-                score_list.append(new_score)
-                silh_list.append(new_normed_silhouette)
+                score_list.append(new_scaled_silhouette_score)
+                silh_list.append(new_scaled_silhouette)
                 silh_idx.append(candidates[i])
-
-        idx = silh_idx[np.argmax(score_list)]
+        if score_list:
+            idx = silh_idx[np.argmax(score_list)]
 
             #self.idx_array_ = idx_array
             #self.silhouette_array_ = silhouette_array   
