@@ -148,7 +148,7 @@ class Pogo:
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,4)
+        new_scaler = np.power(new_scaler,1)
         new_scaler = new_scaler.reshape(len(gap_vector))
         
         score_list = []
