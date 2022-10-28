@@ -7,10 +7,10 @@ into their most persisent arrangement. The goal of Pogo is to find the best cuto
 
 ## Abstract
 
-   Filtrations of simplicial complexes, and representations like barcodes and persistence diagrams, encode topological information about a set of points, or a network graph. The 0’th dimensional persistent homology includes only points and edges, forming connected components, i.e. clusters. Here, we propose a parameter agnostic clustering algorithm, based on the statistical partitioning of filtrations into noise and features, called Proportional Gap Ordering, It transforms a filtration of simplicial complexes into a probability vector, and chooses optimal cutoffs [Myers 2020] based on the behavior of connected components, producing cluster assignments for a data set [Chazal 2013], along with a measure of likeliness for each possible clustering [Fasy 2014]. In contrast to most clustering algorithms, Pogo takes no parameters at all, meaning that no a priori knowledge of the dataset structure is required to obtain reasonable clustering labels.
+   Filtrations of simplicial complexes, and representations like barcodes [Ghrist 2008] and persistence diagrams [Bubenik 2015], encode topological information about a set of points, or a network graph. The 0’th dimensional persistent homology includes only points and edges, forming connected components, i.e. clusters. Here, we propose a parameter agnostic clustering algorithm, based on the statistical partitioning of filtrations into noise and features, called Proportional Gap Ordering, It transforms a filtration of simplicial complexes into a probability vector, and chooses optimal cutoffs [Myers 2020] based on the behavior of connected components, producing cluster assignments for a data set [Chazal 2013], along with a measure of likeliness for each possible clustering [Fasy 2014]. In contrast to most clustering algorithms, Pogo takes no parameters at all, meaning that no a priori knowledge of the dataset structure is required to obtain reasonable clustering labels.
 
 ## Introduction
-The bottleneck and wasserstein distances on persistence diagrams have been proven to be stable, which gives a theoretical support to using the tools of persistent homology in noisy real-world scenarios. Vectorizations like persistence landscapes and persistent entropy can be used as inputs to machine learning models, extending usefuleness even further. These representations are a powerful tool for feature detection in predictive models. Bi-filtrations multiply these capabilites by introducing a second parameter to the filtration, such as a function accounting for density, or another known property of the data. This addresses the primary weakness of persistent homology, which is unable to account for regions of density. Work from Bubenik et al has shown the fundamental ability of persistence diagrams to separate noise from topological features, due to the stable statistical properties of barcodes and filtrations. All of this taken together implies that filtrations contain inherently agnostic, yet rich statistical information about the clustering (and topological) behavior of datasets across scales and dimensions. 
+The bottleneck and wasserstein distances on persistence diagrams have been proven to be stable [Cohen-Steiner 2007], which gives a theoretical support to using the tools of persistent homology in noisy real-world scenarios. Vectorizations like persistence landscapes and persistent entropy [Atienza 2017] can be used as inputs to machine learning models, extending usefuleness even further. These representations are a powerful tool for feature detection in predictive models. Bi-filtrations [Blumberg 2020, Vipond 2020, Vipond 2021] multiply these capabilites by introducing a second parameter to the filtration, such as a function accounting for density, or another known property of the data. This addresses the primary weakness of persistent homology, which is unable to account for regions of density. Other work has shown the fundamental ability of persistence diagrams to separate noise from topological features[Bubenik 2020, Wang 2010], due to the stable statistical properties of barcodes and filtrations [Mileyko 2011]. All of this taken together implies that filtrations contain inherently agnostic, yet rich statistical information about the clustering (and topological) behavior of datasets across scales and dimensions [Güzel 2022, Chowdhury 2017]. Other attempts have been made, with various approaches, to use topology, and especially persistent homology, as a basis for clustering algorithms [Songdechakraiwut 2021, Davies 2020, Islambekov 2018, Kindelan 2021].
   
 
 ## Background Concepts
@@ -105,56 +105,60 @@ Further improving the statistical ouputs of pogo is a priority. What is the math
 
 ## References
 
-Robert Ghrist. Barcodes: The persistent topology of data. Bulletin of the American Mathematical
-Society, 45(1):61–75, 2008.
+[Atienza 2017] Atienza, Nieves, Rocío González-Díaz and Matteo Rucco. “Persistent entropy for separating topological features from noise in vietoris-rips complexes.” Journal of Intelligent Information Systems 52 (2017): 637-655.
+
+[Blumberg 2020] Blumberg, Andrew J., and Michael Lesnick. "Stability of 2-Parameter Persistent Homology." (2020). 
 
 [Boissonnat 2014] Boissonnat, Jean-Daniel and Clément Maria. “The Simplex Tree: An Efficient Data Structure for General Simplicial Complexes.” Algorithmica 70 (2014): 406-427.
 
-Bubenik, Peter. “Statistical topological data analysis using persistence landscapes.” J. Mach. Learn. Res. 16 (2015): 77-102.
+[Bubenik 2015] Bubenik, Peter. “Statistical topological data analysis using persistence landscapes.” J. Mach. Learn. Res. 16 (2015): 77-102.
+
+[Bubenik 2020] Bubenik, Peter, Michael Hull, Dhruv Patel and Benjamin Whittle. “Persistent homology detects curvature.” Inverse Problems 36 (2020).
 
 [Chazal 2013] Chazal, Frédéric, Leonidas J. Guibas, Steve Oudot and Primoz Skraba. “Persistence-Based Clustering in Riemannian Manifolds.” J. ACM 60 (2013): 41:1-41:38.
 
-Cohen-Steiner, David, Herbert Edelsbrunner and John Harer. “Stability of Persistence Diagrams.” Discrete & Computational Geometry 37 (2007): 103-120.
+[Chowdhury 2017] Chowdhury, Samir and Facundo Mémoli. “Convergence of Hierarchical Clustering and Persistent Homology Methods on Directed Networks.” ArXiv abs/1711.04211 (2017).
 
-Blumberg, Andrew J., and Michael Lesnick. "Stability of 2-Parameter Persistent Homology." (2020). 
+[Cohen-Steiner 2007] Cohen-Steiner, David, Herbert Edelsbrunner and John Harer. “Stability of Persistence Diagrams.” Discrete & Computational Geometry 37 (2007): 103-120.
 
-Songdechakraiwut, Tananun, Bryan M. Krause, Matthew I. Banks, Kirill V. Nourski and Barry D. Van Veen. “Fast Topological Clustering with Wasserstein Distance.” ArXiv abs/2112.00101 (2021).
 
-Chowdhury, Samir and Facundo Mémoli. “Convergence of Hierarchical Clustering and Persistent Homology Methods on Directed Networks.” ArXiv abs/1711.04211 (2017): n. pag.
+[Davies 2020] Davies, Thomas O. M., Jack Aspinall, Bryan Wilder and Long Tran-Thanh. “Fuzzy c-Means Clustering for Persistence Diagrams.” ArXiv abs/2006.02796 (2020).
+
+[Fanti 2018] P. Fänti and S. Sieranoja. "K-means properties on six clustering benchmark datasets." Applied Intelligence, 48 (12), 4743-4759, December (2018), https://doi.org/10.1007/s10489-018-1238-7.
 
 [Fasy 2014] Fasy, Brittany Terese, Fabrizio Lecci, Alessandro Rinaldo, Larry A. Wasserman, Sivaraman Balakrishnan and Aarti Singh. “Confidence sets for persistence diagrams.” The Annals of Statistics 42 (2014).
 
-Schweinhart, Benjamin. “Fractal dimension and the persistent homology of random geometric complexes.” Advances in Mathematics (2020): n. pag.
+[Ghrist 2008] Ghrist, Robert. "Barcodes: The persistent topology of data." Bulletin of the American Mathematical
+Society (2008), 45(1):61–75.
 
-Atienza, Nieves, Rocío González-Díaz and Matteo Rucco. “Persistent entropy for separating topological features from noise in vietoris-rips complexes.” Journal of Intelligent Information Systems 52 (2017): 637-655.
+[Güzel 2022] Güzel, Ismail and Atabey Kaygun. “A new non-archimedean metric on persistent homology.” Comput. Stat. 37 (2022): 1963-1983.
 
-Adler, Robert J., Omer Bobrowski and Shmuel Weinberger. “Crackle: The Persistent Homology of Noise.” arXiv: Probability (2013): n. pag.
+[Islambekov 2018] Islambekov, Umar and Yulia R. Gel. “Unsupervised space–time clustering using persistent homology.” Environmetrics 30 (2018).
 
-Myers, Audun D., Firas A. Khasawneh and Brittany Terese Fasy. “ANAPT: Additive noise analysis for persistence thresholding.” Foundations of Data Science (2022): n. pag.
+[Kindelan 2021] Kindelan, Rolando, Jos'e Fr'ias, Mauricio Cerda and Nancy Hitschfeld-Kahler. “A Topological Data Analysis Based Classifier.” ArXiv abs/2111.05214 (2021).
+
+[Mileyko 2011] Mileyko, Yuriy, Sayan Mukherjee and John Harer. “Probability measures on the space of persistence diagrams.” Inverse Problems 27 (2011): 124007.
 
 [Myers 2020] Myers, Audun D., Firas A. Khasawneh and Brittany Terese Fasy. “Separating Persistent Homology of Noise from Time Series Data Using Topological Signal Processing.” arXiv: Algebraic Topology (2020).
 
-Wang, Bei. "Separating Features from Noise with Persistence and Statistics." Department of Computer Science, Duke University, Ph.D. Dissertation, 2010.
+[Songdechakraiwut 2021] Songdechakraiwut, Tananun, Bryan M. Krause, Matthew I. Banks, Kirill V. Nourski and Barry D. Van Veen. “Fast Topological Clustering with Wasserstein Distance.” ArXiv abs/2112.00101 (2021).
 
-[Fanti] P. Fänti and S. Sieranoja. "K-means properties on six clustering benchmark datasets." Applied Intelligence, 48 (12), 4743-4759, December 2018, https://doi.org/10.1007/s10489-018-1238-7 .
+[Vipond 2020] Vipond, Oliver. “Multiparameter Persistence Landscapes.” J. Mach. Learn. Res. 21 (2020): 61:1-61:38.
 
-Vipond, Oliver. “Multiparameter Persistence Landscapes.” J. Mach. Learn. Res. 21 (2020): 61:1-61:38.
+[Vipond 2021] Vipond, Oliver, Joshua A. Bull, Philip S. Macklin, Ulrike Tillmann, Christopher W. Pugh, Helen M. Byrne and Heather A. Harrington. “Multiparameter persistent homology landscapes identify immune cell spatial patterns in tumors.” Proceedings of the National Academy of Sciences of the United States of America 118 (2021).
 
-Vipond, Oliver, Joshua A. Bull, Philip S. Macklin, Ulrike Tillmann, Christopher W. Pugh, Helen M. Byrne and Heather A. Harrington. “Multiparameter persistent homology landscapes identify immune cell spatial patterns in tumors.” Proceedings of the National Academy of Sciences of the United States of America 118 (2021): n. pag.
+[Wang 2010] Wang, Bei. "Separating Features from Noise with Persistence and Statistics." Department of Computer Science, Duke University, Ph.D. Dissertation, 2010.
 
-Davies, Thomas O. M., Jack Aspinall, Bryan Wilder and Long Tran-Thanh. “Fuzzy c-Means Clustering for Persistence Diagrams.” ArXiv abs/2006.02796 (2020): n. pag.
+## Additional Reading
 
-Islambekov, Umar and Yulia R. Gel. “Unsupervised space–time clustering using persistent homology.” Environmetrics 30 (2018): n. pag.
+Schweinhart, Benjamin. “Fractal dimension and the persistent homology of random geometric complexes.” Advances in Mathematics (2020).
+
+Adler, Robert J., Omer Bobrowski and Shmuel Weinberger. “Crackle: The Persistent Homology of Noise.” arXiv: Probability (2013).
+
+Myers, Audun D., Firas A. Khasawneh and Brittany Terese Fasy. “ANAPT: Additive noise analysis for persistence thresholding.” Foundations of Data Science (2022).
+
+Masoomy, H., Behrouz Askari, M N Najafi and S. M. S. Movahed. “Persistent homology of fractional Gaussian noise.” Physical review. E 104 3-1 (2021): 034116.
 
 
-Masoomy, H., Behrouz Askari, M N Najafi and S. M. S. Movahed. “Persistent homology of fractional Gaussian noise.” Physical review. E 104 3-1 (2021): 034116 .
 
-Bubenik, Peter, Michael Hull, Dhruv Patel and Benjamin Whittle. “Persistent homology detects curvature.” Inverse Problems 36 (2020): n. pag.
 
-Mileyko, Yuriy, Sayan Mukherjee and John Harer. “Probability measures on the space of persistence diagrams.” Inverse Problems 27 (2011): 124007.
-
-Islambekov, Umar and Yulia R. Gel. “Unsupervised space–time clustering using persistent homology.” Environmetrics 30 (2018): n. pag.
-
-Kindelan, Rolando, Jos'e Fr'ias, Mauricio Cerda and Nancy Hitschfeld-Kahler. “A Topological Data Analysis Based Classifier.” ArXiv abs/2111.05214 (2021): n. pag.
-
-Güzel, Ismail and Atabey Kaygun. “A new non-archimedean metric on persistent homology.” Comput. Stat. 37 (2022): 1963-1983.
