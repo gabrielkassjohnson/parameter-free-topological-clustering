@@ -1,13 +1,14 @@
-# Proportional Gap Ordering: Parameter Agnostic Topological Clustering in Metric Spaces
-
-This is an illustration of how Pogo proceeds through a dataset. You can see the clusters merging and stabilizing
-into their most persisent arrangement. The goal of Pogo is to find the best cutoff within the sequence, and assign a confidence.
+# Proportional Gap Ordering (PoGo): Parameter Agnostic Topological Clustering in Metric Spaces
 
 <img  src="varied140frames.gif" />
 
+Figure 1. An animation of how Pogo proceeds through a dataset. You can see the clusters merging and stabilizing
+into their most persisent arrangement. The goal of Pogo is to find the best cutoff within the sequence, and assign a confidence.<br><br>
+    
+    
 ## Abstract
 
-   Filtrations of simplicial complexes, and representations like barcodes [Ghrist 2008] and persistence diagrams [Bubenik 2015], encode topological information about a set of points, or a network graph. The 0’th dimensional persistent homology includes only points and edges, forming connected components, i.e. clusters. Here, we propose a parameter agnostic clustering algorithm, based on the statistical partitioning of filtrations into noise and features, called Proportional Gap Ordering, It transforms a filtration of simplicial complexes into a probability vector, and chooses optimal cutoffs [Myers 2020] based on the behavior of connected components, producing cluster assignments for a data set [Chazal 2013], along with a measure of likeliness for each possible clustering [Fasy 2014]. In contrast to most clustering algorithms, Pogo takes no parameters at all, meaning that no a priori knowledge of the dataset structure is required to obtain reasonable clustering labels.
+Filtrations of simplicial complexes, and representations like barcodes [Ghrist 2008] and persistence diagrams [Bubenik 2015], encode topological information about a set of points, or a network graph. The 0’th dimensional persistent homology includes only points and edges, forming connected components, i.e. clusters. Here, we propose a parameter agnostic clustering algorithm, based on the statistical partitioning of filtrations into noise and features, called Proportional Gap Ordering, It transforms a filtration of simplicial complexes into a probability vector, and chooses optimal cutoffs [Myers 2020] based on the behavior of connected components, producing cluster assignments for a data set [Chazal 2013], along with a measure of likeliness for each possible clustering [Fasy 2014]. In contrast to most clustering algorithms, Pogo takes no parameters at all, meaning that no a priori knowledge of the dataset structure is required to obtain reasonable clustering labels.
 
 ## Introduction
 The bottleneck and wasserstein distances on persistence diagrams have been proven to be stable [Cohen-Steiner 2007], which gives a theoretical support to using the tools of persistent homology in noisy real-world scenarios. Vectorizations like persistence landscapes and persistent entropy [Atienza 2017] can be used as inputs to machine learning models, extending usefuleness even further. These representations are a powerful tool for feature detection in predictive models. Bi-filtrations [Blumberg 2020, Vipond 2020, Vipond 2021] multiply these capabilites by introducing a second parameter to the filtration, such as a function accounting for density, or another known property of the data. This addresses the primary weakness of persistent homology, which is unable to account for regions of density. Other work has shown the fundamental ability of persistence diagrams to separate noise from topological features[Bubenik 2020, Wang 2010], due to the stable statistical properties of barcodes and filtrations [Mileyko 2011]. All of this taken together implies that filtrations contain inherently agnostic, yet rich statistical information about the clustering (and topological) behavior of datasets across scales and dimensions [Güzel 2022, Chowdhury 2017]. Other attempts have been made, with various approaches, to use topology, and especially persistent homology, as a basis for clustering algorithms [Songdechakraiwut 2021, Davies 2020, Islambekov 2018, Kindelan 2021].
@@ -88,7 +89,7 @@ for element in candidates[1:]:
 
 ## Test Sets
 These are the exact test sets used in the scikitlearn tutorial on clustering. The only change is that the results of Pogo have
-been added, and another clustering test set has been added. [Fanti] It performs comparably well to the other algorithms, exhbiting behavior expected of a topological algorithm, i.e. discerning shapes with intertwining features. Pogo is also capable of outputting outliers, which are shown as black data points. It's currently not optimized for speed, as it's still in an experimental phase, but several easy improvements for speed and reducing algorithmic complexity are in the works.
+been added, and another clustering test set has been added [Fanti 2018]. Pogo performs comparably well to the other algorithms, exhbiting behavior expected of a topological algorithm, i.e. discerning shapes with intertwining features. The algorithm is also capable of outputting outliers, which are shown as black data points. It's currently not optimized for speed, as it's still in an experimental phase, but several easy improvements for speed and reducing algorithmic complexity are in the works.
 <img  src="scikit-learn-testsets.png" />
 
 ## Conclusion and Next Steps
@@ -98,7 +99,7 @@ This opens up the possibility of doing soft-clustering, where each
 point is assigned to a cluster with some probability. Finally we note that, because
 we use a topological framework, additional features can be extracted from the data
 through higher-dimensional persistence diagrams [Chazal et al. 2011], such as the cir-
-cular structure [...] although it is not yet clear how this type of information can be exploited. [Chazal]
+cular structure [...] although it is not yet clear how this type of information can be exploited. [Chazal 2013]
 ```
 Pogo produces a wealth of parameters useful in analyzing the clustering behavior of datasets. Individual data points can be seen as having an individual filtration of the clusters that they belong to, over time. If individual points can be characterized as having a statistical relationship with this or that cluster, then the entire filtration must also have those characteristics. Which is to say, if every point is polled as to which cluster it belongs with the highest statistical certainty, a clustering arrangement composed of points polled individually this way may contain a mixture of the information in the original filtration, and connectivity information from regions of lower local density.
 Further improving the statistical ouputs of pogo is a priority. What is the mathematical support for the specific values of confidences it produces? Often, it seems to give an overly high confidence for the final cutoff. While human intution is always looking for more detail, pogo seems to be balanced primarily with the global properties of the dataset. Why is this? Is this the effect of blindness to density? Suppose a similar cutoff optimization algorithm could be run on a bi-filtration, would the balance then shift towards local structure? Intuitively, finding such a cutoff within a bi-filtration should give higher test accuracies, because of it's ability to balance and combine local and global stucture.
