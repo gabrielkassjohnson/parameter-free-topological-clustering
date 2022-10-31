@@ -55,7 +55,7 @@ for tuple i in S:
 
 gaps_ <- list_of_distances.diff() // takes the difference of each successive distance value.  
 normed_distance <- gaps.MinMaxScaler // normalizes gaps to a range of (0,1).  
-inverted_normed_distance <- 1 -  normed_distance // a discrete function with negative slope and curvature in [0,1].  
+inverted_normed_distance <- 1 -  normed_distance // a discrete function with negative slope and curvature in (0,1).  
 raised_inverted_normed_distance <- inverted_normed_distance^4  
 //raising to a power increases early weighting. Tunable Parameter.  
 normed_gaps <- multiply(gaps, raised_inverted_normed_distance) //crucial step, scales gaps proportionately.  
