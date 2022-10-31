@@ -104,7 +104,8 @@ class Pogo:
         #change dtype to avoid error?
         #inverted_normed_distance = inverted_normed_distance.astype(np.complex)
         #and square it to increase the weighting
-        inverted_normed_distance = np.power(inverted_normed_distance,4)
+        inverted_normed_distance = np.power(inverted_normed_distance,1)
+        self.inverted_normed_distance_ = inverted_normed_distance
         normed_gaps = np.multiply(gaps, inverted_normed_distance)
         #normed_gaps = normed_gaps.astype(np.float)
 
@@ -124,7 +125,7 @@ class Pogo:
                 marker = i
 
         candidates = np.flip(np.argsort(gap_vector))
-        candidates = [x for x in candidates if x > 4*simplex_tree.num_vertices()]
+        candidates = [x for x in candidates if x >  4 * simplex_tree.num_vertices()]
         idx = candidates[0]
         self.initial_idx_ = idx
         '''
@@ -142,34 +143,57 @@ class Pogo:
 
 
         #idx = candidates[1]
-        
+
         new_scaler = np.arange(len(gap_vector))
         scaler = MinMaxScaler()
         new_scaler = scaler.fit_transform(new_scaler.reshape(-1,1))
         new_scaler = 1 - new_scaler
-        new_scaler = np.power(new_scaler,2)
+        new_scaler = np.power(new_scaler,1)
         new_scaler = new_scaler.reshape(len(gap_vector))
-        for i in range(1,60):
-            current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
-            current_normed_silhouette = (current_silhouette + 1)/2
+        
+        score_list = []
+        silh_list = []
+        silh_idx = []
+        for i in range(1,50):
+            if candidates[i] < candidates[0]:
 
-            current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
+                current_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[idx].values())), metric="euclidean")
+                current_normed_silhouette = (current_silhouette + 1)/2
 
-            current_scaled_score = np.multiply(current_score,new_scaler[idx])
+                current_score = np.multiply(current_normed_silhouette,gap_vector[idx])
+
+                current_scaled_score = np.multiply(current_score,new_scaler[idx])
+
+                current_scaled_silhouette = np.multiply(current_normed_silhouette,new_scaler[idx])
+
+                current_scaled_silhouette_score = np.multiply(current_scaled_silhouette,gap_vector[idx])
 
 
-            new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
-            new_normed_silhouette = (new_silhouette + 1)/2
+                new_silhouette = metrics.silhouette_score(self.X,np.array(list(cluster_dict_list[candidates[i]].values())), metric="euclidean")
+                new_normed_silhouette = (new_silhouette + 1)/2
 
-            new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
+                new_score = np.multiply(new_normed_silhouette,gap_vector[candidates[i]])
 
-            new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+                new_scaled_score = np.multiply(new_score,new_scaler[candidates[i]])
+
+                new_scaled_silhouette = np.multiply(new_normed_silhouette,new_scaler[candidates[i]])
+
+                new_scaled_silhouette_score = np.multiply(new_scaled_silhouette,gap_vector[candidates[i]])
 
 
-            if  new_normed_silhouette >  current_normed_silhouette and candidates[i] < candidates[i-1]:
-                idx = candidates[i]
-            else:
-                break
+                score_list.append(new_score)
+                silh_list.append(new_normed_silhouette)
+                silh_idx.append(candidates[i])
+        score_max = 0
+        if score_list:
+            score_max = silh_idx[np.argmax(score_list)]
+        self.score_max_ = score_max
+        silh_max = 0
+        if silh_list:
+            silh_max = silh_idx[np.argmax(silh_list)]
+            idx = silh_max
+
+        self.silh_max_ = silh_max
 
             #self.idx_array_ = idx_array
             #self.silhouette_array_ = silhouette_array   
@@ -183,6 +207,10 @@ class Pogo:
         labels = replace_groups(labels)
         labels[neg_idxs] = -1
             
+        self.score_list_ = score_list
+        self.silh_list_ = silh_list
+        self.silh_idx_ = silh_idx
+        
         self.simplex_tree_ = simplex_tree
         self.n_clusters_ = np.count_nonzero(np.unique(np.array(list(cluster_dict_list[idx].values()))))
         self.confidence_ = '{:.1%}'.format(gap_vector[idx])
@@ -221,7 +249,7 @@ class Pogo:
             c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
         plt.figure(figsize=(8,8))
-        plt.scatter(self.X[:, 0], self.X[:, 1],
+        scatter = plt.scatter(self.X[:, 0], self.X[:, 1],
                     s=40, 
                     c=c,
                     marker="o",
@@ -232,33 +260,45 @@ class Pogo:
                     vmin = 0)
 
         plt.show()
+        return scatter
         
-    def plot_silhouette_score(self, number_of_indices):
+    def plot_silhouette(self):
         import matplotlib.pyplot as plt
 
-        idx_list = self.candidates_.copy()[:number_of_indices]
-        idx_list.sort()
-        silhouette_indices = np.asarray(idx_list)
-        silhouette_list = []
-        for i in idx_list:
-            silhouette = metrics.silhouette_score(self.X, np.array(list(self.cluster_dict_list_[i].values())), metric="euclidean")
-            silhouette_list.append(silhouette)
-        silhouette_array = np.asarray(silhouette_list)
-        plt.plot(silhouette_indices,silhouette_array)
+        silhouette_indices = np.asarray(self.silh_idx_)
+        silhouette_array = np.asarray(self.silh_list_)
+        if self.score_max_:
+            print('Maximum Silhouette:', self.silh_idx_[np.argmax(self.silh_list_)])
+
+        plt.plot(silhouette_indices,silhouette_array,'o')
         return silhouette_indices, silhouette_array
         
-    def plot_rand_score(self, number_of_indices, ground_truth_labels):
+        
+    def plot_silhouette_score(self):
         import matplotlib.pyplot as plt
-        idx_list = self.candidates_.copy()[:number_of_indices]
-        idx_list.sort()
-        rand_indices = np.asarray(idx_list)
+
+        score_indices = np.asarray(self.silh_idx_)
+        score_array = np.asarray(self.score_list_)
+        if self.score_max_:
+            print('Maximum Silhouette Score:', self.silh_idx_[np.argmax(self.score_list_)])
+
+        plt.plot(score_indices,score_array,'o')
+        return score_indices, score_array
+       
+
+    def plot_rand_score(self, ground_truth_labels):
+        import matplotlib.pyplot as plt
+        rand_indices = np.asarray(self.silh_idx_)
         rand_score_list = []
-        for i in idx_list:
+        for i in self.silh_idx_:
             pred = np.array(list(self.cluster_dict_list_[i].values()))
             rand_score = metrics.adjusted_rand_score( ground_truth_labels, pred)
             rand_score_list.append(rand_score)
         rand_score_array = np.asarray(rand_score_list)
-        plt.plot(rand_indices,rand_score_array)
+        print('Maximum Rand Score:', self.silh_idx_[np.argmax(rand_score_array)])
+
+        plt.plot(rand_indices,rand_score_array,'o')
+
         return rand_indices, rand_score_array
 
 
