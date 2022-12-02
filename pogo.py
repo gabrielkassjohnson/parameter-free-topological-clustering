@@ -2,6 +2,8 @@ import numpy as np
 import gudhi
 from sklearn import metrics
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from scipy.spatial.distance import is_valid_dm
+from sklearn.decomposition import KernelPCA
 
 
 class Pogo:
@@ -43,7 +45,13 @@ class Pogo:
         #scipy.spatial.distance.is_valid_dm(D, tol=0.0, throw=False, name='D', warning=False)
         #Main steps here
         self.X = X
-        rips_complex = gudhi.RipsComplex(points=X)
+        if is_valid_dm(self.X):
+            rips_complex = gudhi.RipsComplex(distance_matrix=self.X)
+
+
+        else:
+            rips_complex = gudhi.RipsComplex(points=self.X)
+
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
         #move through list and assign clusters to conected components
         point_dict={i:-1 for i in range(simplex_tree.num_vertices())}
@@ -111,6 +119,7 @@ class Pogo:
 
         #normalize to create a probability vector
         gap_vector = normed_gaps / np.sum(normed_gaps)
+        self.initial_gap_vector_ = gap_vector
         
         marker = 0
         for i in range(1,length-1):
@@ -248,8 +257,19 @@ class Pogo:
         if plot_idx is not None:
             c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
+        if is_valid_dm(self.X):
+            negmdist = np.negative(self.X)
+            similarity_matrix  = np.exp(negmdist)
+            kpca_2d_model = KernelPCA(n_components=2, kernel='precomputed',random_state=42)
+            kpca2 = kpca_2d_model.fit_transform(similarity_matrix)
+            X = kpca2[:,0]
+            y = kpca2[:,1]
+        else:
+            X = self.X[:, 0]
+            y = self.X[:, 1]
+        
         plt.figure(figsize=(8,8))
-        scatter = plt.scatter(self.X[:, 0], self.X[:, 1],
+        scatter = plt.scatter(X,y,
                     s=40, 
                     c=c,
                     marker="o",
