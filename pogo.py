@@ -3,6 +3,8 @@ import gudhi
 from sklearn import metrics
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from scipy.spatial.distance import is_valid_dm
+from scipy.spatial.distance import pdist
+from scipy.spatial.distance import squareform
 from sklearn.decomposition import KernelPCA
 
 
@@ -50,7 +52,9 @@ class Pogo:
 
 
         else:
-            rips_complex = gudhi.RipsComplex(points=self.X)
+            cmdist = pdist(self.X, 'correlation')
+            mdist = squareform(cmdist, force='no', checks=True)
+            rips_complex = gudhi.RipsComplex(distance_matrix=mdist)
 
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
         #move through list and assign clusters to conected components
@@ -258,12 +262,10 @@ class Pogo:
             c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
         if is_valid_dm(self.X):
-            negmdist = np.negative(self.X)
-            similarity_matrix  = np.exp(negmdist)
-            kpca_2d_model = KernelPCA(n_components=2, kernel='precomputed',random_state=42)
-            kpca2 = kpca_2d_model.fit_transform(similarity_matrix)
-            X = kpca2[:,0]
-            y = kpca2[:,1]
+            umap_model_2d = UMAP(metric='precomputed',min_dist=0.0001,n_neighbors=4)
+            umap_embedding = umap_model_2d.fit_transform(mdist)
+            X = umap_embedding[:,0]
+            y = umap_embedding[:,1]
         else:
             X = self.X[:, 0]
             y = self.X[:, 1]
