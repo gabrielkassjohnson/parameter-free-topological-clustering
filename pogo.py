@@ -6,7 +6,7 @@ from scipy.spatial.distance import is_valid_dm
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 from sklearn.decomposition import KernelPCA
-
+from umap import UMAP
 
 class Pogo:
     """
@@ -48,14 +48,12 @@ class Pogo:
         #Main steps here
         self.X = X
         if is_valid_dm(self.X):
-            rips_complex = gudhi.RipsComplex(distance_matrix=self.X)
+            umap_model_2d = UMAP(metric='precomputed',min_dist=0.0001,n_neighbors=4)
+            umap_embedding = umap_model_2d.fit_transform(self.X)
+            self.X = umap_embedding
 
 
-        else:
-            cmdist = pdist(self.X, 'correlation')
-            mdist = squareform(cmdist, force='no', checks=True)
-            rips_complex = gudhi.RipsComplex(distance_matrix=mdist)
-
+        rips_complex = gudhi.RipsComplex(points=self.X)
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
         #move through list and assign clusters to conected components
         point_dict={i:-1 for i in range(simplex_tree.num_vertices())}
@@ -261,15 +259,10 @@ class Pogo:
         if plot_idx is not None:
             c = np.array(list(self.cluster_dict_list_[plot_idx].values()))
 
-        if is_valid_dm(self.X):
-            umap_model_2d = UMAP(metric='precomputed',min_dist=0.0001,n_neighbors=4)
-            umap_embedding = umap_model_2d.fit_transform(mdist)
-            X = umap_embedding[:,0]
-            y = umap_embedding[:,1]
-        else:
-            X = self.X[:, 0]
-            y = self.X[:, 1]
-        
+
+        X = self.X[:, 0]
+        y = self.X[:, 1]
+
         plt.figure(figsize=(8,8))
         scatter = plt.scatter(X,y,
                     s=40, 
